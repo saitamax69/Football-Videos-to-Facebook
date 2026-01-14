@@ -14,7 +14,7 @@ FB_PAGE_ID = os.getenv("FB_PAGE_ID")
 
 # Default to Sky Sports, but allow override via GitHub Vars
 DEFAULT_CHANNEL = "https://www.youtube.com/@SkySportsFootball/videos"
-YOUTUBE_CHANNEL_URL = os.getenv("YT_CHANNEL_URL", DEFAULT_CHANNEL)
+YOUTUBE_CHANNEL_URL = "https://www.youtube.com/@SkySportsFootball/videos"
 
 def get_latest_video_from_channel():
     """
