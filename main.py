@@ -16,26 +16,39 @@ FB_PAGE_ID = os.getenv("FB_PAGE_ID")
 
 def get_latest_highlight():
     """
-    Reads OurMatch RSS feed to get the latest highlight link.
+    Reads OurMatch RSS feed with a custom User-Agent to avoid blocks.
     """
     rss_url = "https://ourmatch.net/videos/feed/"
     logger.info("📡 Fetching latest highlights from OurMatch...")
     
-    feed = feedparser.parse(rss_url)
+    # Custom Headers to look like a browser
+    headers = {
+        'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36'
+    }
     
-    if not feed.entries:
-        logger.error("❌ Failed to fetch RSS feed.")
-        return None
+    try:
+        response = requests.get(rss_url, headers=headers, timeout=10)
+        
+        # Parse the raw content
+        feed = feedparser.parse(response.content)
+        
+        if not feed.entries:
+            logger.error("❌ RSS feed parsed but found no entries.")
+            return None
 
-    # Get the very first entry (latest match)
-    entry = feed.entries[0]
-    title = entry.title
-    link = entry.link
-    
-    logger.info(f"✅ Found Match: {title}")
-    logger.info(f"🔗 Link: {link}")
-    
-    return {"title": title, "link": link}
+        # Get the very first entry (latest match)
+        entry = feed.entries[0]
+        title = entry.title
+        link = entry.link
+        
+        logger.info(f"✅ Found Match: {title}")
+        logger.info(f"🔗 Link: {link}")
+        
+        return {"title": title, "link": link}
+        
+    except Exception as e:
+        logger.error(f"❌ Error fetching RSS: {e}")
+        return None
 
 def download_video(url):
     filename = "temp_video.mp4"
@@ -43,13 +56,12 @@ def download_video(url):
     
     logger.info(f"⬇️ Attempting download via yt-dlp...")
 
-    # We use 'best' format but ensure it's mp4 for Facebook compatibility
     ydl_opts = {
         'outtmpl': filename,
         'format': 'bestvideo[ext=mp4]+bestaudio[ext=m4a]/best[ext=mp4]/best',
         'quiet': True,
         'no_warnings': True,
-        'ignoreerrors': True, # Keep trying different embedded players
+        'ignoreerrors': True,
         'user_agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36',
     }
 
@@ -59,9 +71,8 @@ def download_video(url):
             
         if os.path.exists(filename):
             file_size = os.path.getsize(filename) / (1024 * 1024)
-            # Filter out tiny files (sometimes it downloads a 0kb error file)
             if file_size < 1: 
-                logger.warning(f"❌ File too small ({file_size:.2f} MB). Probably failed.")
+                logger.warning(f"❌ File too small ({file_size:.2f} MB).")
                 return None
                 
             logger.info(f"✅ Downloaded! Size: {file_size:.2f} MB")
@@ -86,7 +97,6 @@ def post_to_facebook(video_path, title):
     
     try:
         logger.info("📤 Uploading to Facebook...")
-        # Uploads can take time, set timeout to 3 minutes
         r = requests.post(url, data=payload, files=files, timeout=180)
         
         if r.status_code == 200:
@@ -103,17 +113,13 @@ def post_to_facebook(video_path, title):
 def main():
     logger.info("🚀 STARTING OURMATCH BOT")
     
-    # 1. Get Match Info
     match = get_latest_highlight()
     
     if not match:
         return
 
-    # 2. Download
-    # OurMatch pages contain embedded players. yt-dlp scans the page to find them.
     video_path = download_video(match['link'])
     
-    # 3. Post
     if video_path:
         post_to_facebook(video_path, match['title'])
     else:
