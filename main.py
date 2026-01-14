@@ -16,24 +16,23 @@ FOOTBALL_API_KEY = os.getenv("FOOTBALL_API_KEY")
 FB_PAGE_ACCESS_TOKEN = os.getenv("FB_PAGE_ACCESS_TOKEN")
 FB_PAGE_ID = os.getenv("FB_PAGE_ID")
 
-def download_tiktok_via_search(query):
+def download_video_via_search(query):
     """
-    Uses yt-dlp to search TikTok and download the first result directly.
-    Prefix: 'ttsearch1:' means 'search TikTok and take the top 1 result'
+    Uses yt-dlp to search YouTube Shorts and download the first result.
+    Prefix: 'ytsearch1:' means 'search YouTube and take the top 1 result'
     """
     filename = "temp_video.mp4"
     if os.path.exists(filename): os.remove(filename)
     
-    search_query = f"ttsearch1:{query}"
-    logger.info(f"🔍 Searching & Downloading via yt-dlp: {search_query}")
+    # We add "shorts" to the query to ensure we get vertical videos
+    search_query = f"ytsearch1:{query} shorts football goal"
+    logger.info(f"🔍 Searching & Downloading via YouTube: {search_query}")
 
     ydl_opts = {
         'outtmpl': filename,
-        'format': 'mp4', # Force MP4
+        'format': 'bestvideo[ext=mp4]+bestaudio[ext=m4a]/best[ext=mp4]/best',
         'quiet': True,
         'no_warnings': True,
-        # mimic a real browser to avoid blocks
-        'user_agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36',
     }
 
     try:
@@ -41,7 +40,8 @@ def download_tiktok_via_search(query):
             ydl.download([search_query])
             
         if os.path.exists(filename):
-            logger.info("✅ Video downloaded successfully!")
+            file_size = os.path.getsize(filename) / (1024 * 1024)
+            logger.info(f"✅ Video downloaded successfully! Size: {file_size:.2f} MB")
             return filename
         else:
             logger.warning("❌ Download finished but file not found.")
@@ -77,13 +77,12 @@ def post_to_facebook(video_path, title):
 
 def main():
     # --- MANUAL TEST MODE ---
-    # We are bypassing the football API for now to prove it works.
     target_match = "Real Madrid Goal"
     
-    logger.info("🚀 STARTING ROBUST TEST RUN")
+    logger.info("🚀 STARTING YOUTUBE SHORTS TEST RUN")
     
     # 1. Search & Download
-    video_path = download_tiktok_via_search(target_match)
+    video_path = download_video_via_search(target_match)
     
     # 2. Post
     if video_path:
