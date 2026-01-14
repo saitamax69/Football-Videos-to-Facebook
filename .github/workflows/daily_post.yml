@@ -23,8 +23,14 @@ jobs:
           python -m pip install --upgrade pip
           pip install -r requirements.txt
 
+      - name: Create Cookies File (Optional)
+        if: ${{ secrets.YTDLP_COOKIES != '' }}
+        run: |
+          echo "${{ secrets.YTDLP_COOKIES }}" > cookies.txt
+
       - name: Run Automation Script
         env:
           FB_PAGE_ID: ${{ secrets.FB_PAGE_ID }}
           FB_PAGE_ACCESS_TOKEN: ${{ secrets.FB_PAGE_ACCESS_TOKEN }}
+          YT_CHANNEL_URL: ${{ vars.YT_CHANNEL_URL }} # Optional: Set this in Repo Variables
         run: python main.py
