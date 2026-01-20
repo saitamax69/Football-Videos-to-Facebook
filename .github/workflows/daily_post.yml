@@ -1,0 +1,47 @@
+name: Football News Auto-Poster
+
+on:
+  schedule:
+    # Runs every hour at minute 0 (e.g., 1:00, 2:00, 3:00)
+    - cron: '0 * * * *'
+  # Allows you to run this manually from the Actions tab for testing
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  post-news:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v3
+
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.9'
+
+      - name: Install Dependencies
+        run: |
+          pip install -r requirements.txt
+
+      - name: Run Auto-Post Script
+        env:
+          FB_PAGE_ACCESS_TOKEN: ${{ secrets.FB_PAGE_ACCESS_TOKEN }}
+          FB_PAGE_ID: ${{ secrets.FB_PAGE_ID }}
+        run: python main.py
+
+      - name: Commit State (Save last_id.txt)
+        run: |
+          git config --global user.name 'GitHub Action Bot'
+          git config --global user.email 'action@github.com'
+          # Check if last_id.txt changed
+          if [[ -n $(git status -s last_id.txt) ]]; then
+            git add last_id.txt
+            git commit -m "Update last posted article ID"
+            git push
+          else
+            print("No changes to commit.")
+          fi
