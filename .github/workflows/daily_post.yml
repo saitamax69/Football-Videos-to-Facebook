@@ -1,17 +1,16 @@
-name: Football News Auto-Poster
+name: AI Football Auto-Post
 
 on:
   schedule:
-    # Runs every hour at minute 0 (e.g., 1:00, 2:00, 3:00)
+    # Run every hour at minute 0
     - cron: '0 * * * *'
-  # Allows you to run this manually from the Actions tab for testing
   workflow_dispatch:
 
 permissions:
   contents: write
 
 jobs:
-  post-news:
+  post_news:
     runs-on: ubuntu-latest
 
     steps:
@@ -24,24 +23,23 @@ jobs:
           python-version: '3.9'
 
       - name: Install Dependencies
-        run: |
-          pip install -r requirements.txt
+        run: pip install -r requirements.txt
 
-      - name: Run Auto-Post Script
+      - name: Run AI Bot
         env:
           FB_PAGE_ACCESS_TOKEN: ${{ secrets.FB_PAGE_ACCESS_TOKEN }}
           FB_PAGE_ID: ${{ secrets.FB_PAGE_ID }}
+          GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
         run: python main.py
 
-      - name: Commit State (Save last_id.txt)
+      - name: Save History to Repo
         run: |
-          git config --global user.name 'GitHub Action Bot'
-          git config --global user.email 'action@github.com'
-          # Check if last_id.txt changed
-          if [[ -n $(git status -s last_id.txt) ]]; then
-            git add last_id.txt
-            git commit -m "Update last posted article ID"
+          git config --global user.name 'AI Bot'
+          git config --global user.email 'bot@noreply.github.com'
+          if [[ -n $(git status -s history.json) ]]; then
+            git add history.json
+            git commit -m "Update history"
             git push
           else
-            print("No changes to commit.")
+            echo "No changes to history."
           fi
