@@ -6,20 +6,31 @@ import json
 import google.generativeai as genai
 import random
 from bs4 import BeautifulSoup
+import time
 
 # --- CONFIGURATION ---
 RSS_FEEDS = [
-    "https://www.skysports.com/rss/12040",          # Sky Sports
-    "https://www.espn.com/espn/rss/soccer/news",    # ESPN
-    "http://feeds.bbci.co.uk/sport/football/rss.xml", # BBC
-    "https://www.90min.com/posts.rss"               # 90min
+    "https://www.skysports.com/rss/12040",
+    "https://www.espn.com/espn/rss/soccer/news",
+    "http://feeds.bbci.co.uk/sport/football/rss.xml",
+    "https://www.90min.com/posts.rss"
 ]
 
-# Even though we use AI, this blacklist helps save time on obvious junk
+# 1. THE "VIP LIST" - If the title has these, POST IT. No questions asked.
+ALWAYS_POST_TEAMS = [
+    "man utd", "manchester united", "liverpool", "arsenal", "chelsea", "man city", 
+    "tottenham", "spurs", "newcastle", "aston villa",
+    "real madrid", "barcelona", "bayern", "juventus", "psg", "inter milan", "ac milan",
+    "messi", "ronaldo", "mbappe", "haaland", "bellingham", "kane", "salah",
+    "england", "brazil", "france", "argentina", "germany", "spain",
+    "champions league", "europa league", "world cup", "euro 2024", "euro 2028"
+]
+
+# 2. THE BLACKLIST - Skip these immediately.
 BLACKLIST_KEYWORDS = [
-    "podcast", "betting", "odds", "preview", "prediction", "quiz", 
-    "fantasy", "how to watch", "live stream", "women's super league", # Remove if you want women's football
-    "u21", "u18", "championship", "league one", "league two" # Lower leagues
+    "podcast", "how to watch", "live stream", "betting", "odds", "quiz", 
+    "fantasy", "prediction", "women's super league", "u21", "u18", 
+    "league one", "league two", "championship"
 ]
 
 HISTORY_FILE = "history.json"
@@ -30,46 +41,52 @@ def setup_env():
     gemini_key = os.environ.get("GEMINI_API_KEY")
 
     if not all([fb_token, page_id, gemini_key]):
-        raise Exception("Missing Keys. Check GitHub Secrets.")
+        raise Exception("Missing Environment Variables.")
     
     genai.configure(api_key=gemini_key)
     return fb_token, page_id
 
 def is_top_tier(title):
     """
-    Asks AI: Is this news about the top leagues/cups?
-    Returns: True or False
+    Hybrid Filter: 
+    1. Check Keywords (Fast)
+    2. Ask AI (Smart fallback)
     """
+    title_lower = title.lower()
+
+    # CHECK 1: Is it a VIP team?
+    for vip in ALWAYS_POST_TEAMS:
+        if vip in title_lower:
+            print(f"-> MATCHED VIP KEYWORD: {vip}")
+            return True
+
+    # CHECK 2: Ask AI if we aren't sure
+    print("-> No keyword match. Asking AI...")
     try:
         model = genai.GenerativeModel('gemini-pro')
         prompt = (
-            f"Analyze this football headline: '{title}'. "
-            f"Reply with 'YES' strictly and only if the news is about: "
-            f"Premier League, La Liga, Bundesliga, Serie A, Ligue 1, "
-            f"Champions League, Europa League, World Cup, Euros, Copa America, "
-            f"or Major International Teams (England, Brazil, France, Argentina, etc). "
-            f"If it is about lower leagues, minor cups, or gossip, reply 'NO'."
+            f"Is this football headline about a major top-tier team/player "
+            f"(Premier League, La Liga, UCL, or International)? "
+            f"Headline: '{title}'. "
+            f"Reply 'YES' if it is major news. Reply 'NO' if it is lower league, irrelevant, or minor news."
         )
         response = model.generate_content(prompt)
         answer = response.text.strip().upper()
+        print(f"-> AI Answered: {answer}")
         
-        # If AI says YES, it's good news.
         return "YES" in answer
-    except:
-        # If AI fails, we default to True to be safe, or False to be strict.
-        # Let's default False to avoid spam.
+    except Exception as e:
+        print(f"-> AI Check Failed: {e}")
         return False
 
 def get_ai_rewrite(title, description):
-    """ Rewrites the post to be engaging """
     try:
         model = genai.GenerativeModel('gemini-pro')
         prompt = (
-            f"Act as a football journalist. Headline: '{title}'. "
-            f"Context: '{description}'. "
-            f"Write a viral Facebook post (max 2 short sentences). "
+            f"Act as a football news page. Headline: '{title}'. Summary: '{description}'. "
+            f"Write a 1-sentence engaging caption for Facebook. "
             f"Use emojis. Add 3 hashtags. "
-            f"Do not mention the source link."
+            f"Do not mention the source."
         )
         response = model.generate_content(prompt)
         return response.text.strip()
@@ -77,9 +94,8 @@ def get_ai_rewrite(title, description):
         return f"⚽ {title}\n\n#Football"
 
 def get_hd_image(article_url):
-    """ Scrapes the HD Og:Image """
     try:
-        headers = {'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0'}
+        headers = {'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64)'}
         response = requests.get(article_url, headers=headers, timeout=10)
         soup = BeautifulSoup(response.content, 'html.parser')
         og_image = soup.find("meta", property="og:image")
@@ -108,7 +124,7 @@ def save_history(history):
         json.dump(history[-100:], f)
 
 def main():
-    print("--- Starting Top-Tier Football Bot ---")
+    print("--- Starting Hybrid Football Bot ---")
     fb_token, page_id = setup_env()
     graph = facebook.GraphAPI(fb_token)
     history = load_history()
@@ -118,7 +134,7 @@ def main():
 
     for url in RSS_FEEDS:
         if posted: break
-        print(f"Checking feed: {url}...")
+        print(f"\nChecking Feed: {url}...")
         
         try:
             feed = feedparser.parse(url)
@@ -126,47 +142,49 @@ def main():
                 link = entry.link
                 title = entry.title
                 
-                # 1. Check History
+                # Check duplication
                 if link in history: continue
                 
-                # 2. Check Blacklist (Fast filter)
+                # Check blacklist
                 if any(bad in title.lower() for bad in BLACKLIST_KEYWORDS): 
                     continue
 
-                print(f"Analyzing title: {title}")
+                print(f"Analyzing: {title}")
 
-                # 3. AI FILTER (The Gatekeeper)
-                # We ask Gemini if this is top tier news
+                # RUN THE FILTER
                 if not is_top_tier(title):
-                    print("-> AI said: Not top tier. Skipping.")
+                    print("-> Skipped (Not Top Tier)")
                     continue
                 
-                print("-> AI said: TOP TIER! Processing...")
+                print("-> PROCESSING POST...")
 
-                # 4. Get Images
+                # Get Image
                 img_url = get_hd_image(link)
                 if not img_url:
                     img_url = extract_backup_image(entry)
                 
-                if not img_url: continue # No image, no post
+                if not img_url: 
+                    print("-> No image found. Skipping.")
+                    continue
 
-                # 5. Generate Content
+                # Generate Text
                 description = entry.get('summary', title)
                 ai_caption = get_ai_rewrite(title, description)
+                print(f"-> Generated Caption: {ai_caption}")
 
-                # 6. Post
+                # Post
                 headers = {'User-Agent': 'Mozilla/5.0'} 
                 img_data = requests.get(img_url, headers=headers).content
                 graph.put_photo(image=img_data, message=ai_caption)
                 
-                print("Successfully Posted!")
+                print("SUCCESSFULLY POSTED!")
                 history.append(link)
                 save_history(history)
                 posted = True
                 break 
                 
         except Exception as e:
-            print(f"Error: {e}")
+            print(f"Feed Error: {e}")
 
 if __name__ == "__main__":
     main()
