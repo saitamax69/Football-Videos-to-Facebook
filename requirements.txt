@@ -1,3 +1,4 @@
 feedparser
 facebook-sdk
 requests
+google-generativeai
