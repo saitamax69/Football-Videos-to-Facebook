@@ -8,28 +8,33 @@ import time
 from datetime import datetime
 from bs4 import BeautifulSoup
 
-# --- CONFIGURATION ---
+# --- 1. DATA SOURCES (No BBC) ---
 RSS_FEEDS = [
-    "https://www.skysports.com/rss/12040",          # Sky Sports
-    "https://www.espn.com/espn/rss/soccer/news",    # ESPN
-    "http://feeds.bbci.co.uk/sport/football/rss.xml", # BBC
-    "https://www.90min.com/posts.rss"               # 90min
+    "https://www.skysports.com/rss/12040",           # Sky Sports (Reliable)
+    "https://www.espn.com/espn/rss/soccer/news",     # ESPN (Global)
+    "https://www.90min.com/posts.rss",               # 90min (Viral/Fun)
+    "https://talksport.com/football/feed/",          # TalkSport (Great for debates)
+    "https://www.caughtoffside.com/feed/"            # CaughtOffside (Rumors/Transfers)
 ]
 
-# VIP LIST: If title contains these, it is "Hot" news.
+# --- 2. FILTERS ---
+
+# VIP LIST (Post these immediately)
 ALWAYS_POST_TEAMS = [
     "man utd", "manchester united", "liverpool", "arsenal", "chelsea", "man city", 
     "tottenham", "spurs", "newcastle", "aston villa",
     "real madrid", "barcelona", "bayern", "juventus", "psg", "inter milan",
     "messi", "ronaldo", "mbappe", "haaland", "bellingham", "kane", "salah", "yamal",
-    "breaking", "official", "confirmed", "agreement reached", "here we go"
+    "breaking", "official", "confirmed", "agreement", "here we go"
 ]
 
-# JUNK LIST
+# IGNORE LIST (Women's Football + Junk)
 BLACKLIST_KEYWORDS = [
-    "podcast", "how to watch", "live stream", "betting", "odds", "quiz", 
-    "fantasy", "prediction", "women's super league", "u21", "u18", 
-    "league one", "league two", "championship"
+    # Junk
+    "podcast", "how to watch", "live stream", "betting", "odds", "quiz", "fantasy", "prediction",
+    # Women's Football specific blocks
+    "women", "women's", "wsl", "lionesses", "kerr", "earps", "bronze", "wiegman", "hayes", 
+    "hamano", "mead", "williamson", "russo", "ladies", "she", "her" 
 ]
 
 HISTORY_FILE = "history.json"
@@ -44,84 +49,79 @@ def setup_env():
     return fb_token, page_id
 
 def collect_and_sort_news():
-    """
-    1. Fetches ALL feeds.
-    2. Merges them into one list.
-    3. Sorts by DATE (Newest first).
-    """
+    """ Gather news from all feeds and sort by Newest First """
     all_articles = []
-    print("--- Gathering News from All Sources ---")
+    print("--- Gathering News from Sky, ESPN, TalkSport, 90min ---")
 
     for url in RSS_FEEDS:
         try:
             feed = feedparser.parse(url)
             for entry in feed.entries:
-                # Get the timestamp. If missing, use current time (safeguard)
+                # Time sorting logic
                 published_time = entry.get('published_parsed', entry.get('updated_parsed'))
-                
-                # Convert struct_time to a sortable timestamp
-                if published_time:
-                    timestamp = time.mktime(published_time)
-                else:
-                    timestamp = 0 
+                timestamp = time.mktime(published_time) if published_time else 0 
 
                 article = {
                     "title": entry.title,
                     "link": entry.link,
                     "summary": entry.get('summary', ''),
                     "timestamp": timestamp,
-                    "raw_entry": entry, # Keep original data for image extraction
-                    "source": feed.feed.get('title', 'Unknown')
+                    "raw_entry": entry
                 }
                 all_articles.append(article)
         except Exception as e:
             print(f"Error fetching {url}: {e}")
 
-    # SORTING MAGIC: Sort by timestamp, descending (Newest first)
-    sorted_articles = sorted(all_articles, key=lambda x: x['timestamp'], reverse=True)
-    
-    print(f"Collected {len(sorted_articles)} articles. Sorting by newest...")
-    return sorted_articles
+    # Sort: Newest is Index 0
+    return sorted(all_articles, key=lambda x: x['timestamp'], reverse=True)
 
 def is_top_tier(title):
     title_lower = title.lower()
 
-    # 1. VIP Check (Fast)
+    # 1. Check VIP Keywords
     for vip in ALWAYS_POST_TEAMS:
         if vip in title_lower:
-            print(f"-> HOT TOPIC DETECTED: {vip}")
+            print(f"-> HOT TOPIC: {vip}")
             return True
 
-    # 2. AI Check (Slower but smart)
-    print("-> Checking relevance with AI...")
+    # 2. Ask AI (Strict Filter)
     try:
         model = genai.GenerativeModel('gemini-pro')
         prompt = (
-            f"Is this headline about a major football team or player? "
+            f"Is this headline about a major Men's Football team (Top 5 Leagues/International)? "
             f"Headline: '{title}'. "
-            f"Reply 'YES' only for Top 5 Leagues, UCL, or Major International Teams. "
-            f"Reply 'NO' for lower leagues, rumors from unreliable sources, or boring match previews."
+            f"Reply 'YES' ONLY if it is major men's football news. "
+            f"Reply 'NO' if it is Women's football, lower leagues, or irrelevant."
         )
         response = model.generate_content(prompt)
-        answer = response.text.strip().upper()
-        return "YES" in answer
+        return "YES" in response.text.strip().upper()
     except:
         return False
 
 def get_ai_rewrite(title, description):
+    """ 
+    The Engagement Engine: 
+    Generates Title + Body + Question 
+    """
     try:
         model = genai.GenerativeModel('gemini-pro')
         prompt = (
-            f"Act as a viral sports news page. Headline: '{title}'. "
-            f"Write a very short, exciting Facebook caption. "
-            f"Include emojis. Add 3 hashtags. No links."
+            f"Act as a controversial football social media admin. "
+            f"News: '{title}'. Context: '{description}'. "
+            f"Write a Facebook post with this EXACT structure:\n"
+            f"1. A short, All-Caps Hype Headline with emojis.\n"
+            f"2. Two sentences explaining the news clearly.\n"
+            f"3. A question asking fans for their opinion to make them comment.\n"
+            f"Do not include links or 'read more'. Do not mention source names."
         )
         response = model.generate_content(prompt)
         return response.text.strip()
     except:
-        return f"🚨 {title}\n\n#FootballNews"
+        # Backup if AI fails
+        return f"🚨 {title}\n\nWhat are your thoughts on this? 👇\n#Football"
 
 def get_hd_image(article_url):
+    """ Scrape the High-Quality OG:Image """
     try:
         headers = {'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64)'}
         response = requests.get(article_url, headers=headers, timeout=10)
@@ -156,32 +156,34 @@ def main():
     graph = facebook.GraphAPI(fb_token)
     history = load_history()
     
-    # 1. GET ALL NEWS SORTED BY TIME
+    # 1. Get ALL news sorted by newest
     articles = collect_and_sort_news()
     
     posted = False
 
-    # 2. Iterate from Newest -> Oldest
     for article in articles:
         if posted: break
         
         title = article['title']
         link = article['link']
         
-        # SKIP LOGIC
+        # SKIP if seen or blacklisted
         if link in history: continue
-        if any(bad in title.lower() for bad in BLACKLIST_KEYWORDS): continue
+        
+        # Check blacklist (Includes Women's football keywords)
+        if any(bad in title.lower() for bad in BLACKLIST_KEYWORDS): 
+            continue
 
         print(f"\nEvaluating: {title}")
         
-        # 3. APPLY FILTER
+        # CHECK IF TOP TIER
         if not is_top_tier(title):
-            print("-> Skipped (Not Top Tier)")
+            print("-> Skipped (Not Top Tier / Women's / Low Priority)")
             continue
 
-        print("-> SELECTED! Fetching image...")
+        print("-> SELECTED! Fetching content...")
 
-        # 4. GET IMAGE
+        # GET IMAGE
         img_url = get_hd_image(link)
         if not img_url:
             img_url = extract_backup_image(article['raw_entry'])
@@ -190,15 +192,17 @@ def main():
             print("-> No image found. Skipping.")
             continue
 
-        # 5. GENERATE & POST
+        # GENERATE ENGAGEMENT POST
         ai_caption = get_ai_rewrite(title, article['summary'])
-        
+        print(f"-> AI Output:\n{ai_caption}")
+
+        # POST TO FB
         try:
             headers = {'User-Agent': 'Mozilla/5.0'} 
             img_data = requests.get(img_url, headers=headers).content
             graph.put_photo(image=img_data, message=ai_caption)
             
-            print(f"SUCCESS! Posted: {title}")
+            print(f"SUCCESS! Posted.")
             history.append(link)
             save_history(history)
             posted = True
