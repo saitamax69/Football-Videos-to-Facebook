@@ -2,7 +2,10 @@ name: AI Football Auto-Post
 
 on:
   schedule:
-    - cron: '0 * * * *'
+    # Runs at 08:00, 11:00, and 14:00 UTC only.
+    # This covers morning predictions and pre-match updates.
+    # No more late-night runs = no finished games.
+    - cron: '0 8,11,14 * * *'
   workflow_dispatch:
 
 permissions:
