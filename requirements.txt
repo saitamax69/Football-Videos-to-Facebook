@@ -1,5 +1,4 @@
-feedparser
-facebook-sdk
 requests
+facebook-sdk
 google-generativeai
-beautifulsoup4
+pyTelegramBotAPI
