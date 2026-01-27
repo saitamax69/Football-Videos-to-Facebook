@@ -32,96 +32,205 @@ const CONFIG = {
   PAGE_NAME: "Global Score News",
   TELEGRAM_URL: "https://t.me/+9uDCOJXm_R1hMzM0",
   
-  // Top leagues to prioritize
   TOP_LEAGUES: [
     "PREMIER LEAGUE",
-    "LA LIGA", 
+    "LA LIGA",
+    "LALIGA",
     "BUNDESLIGA",
     "SERIE A",
     "LIGUE 1",
     "CHAMPIONS LEAGUE",
+    "UEFA CHAMPIONS",
     "EUROPA LEAGUE",
+    "UEFA EUROPA",
+    "CONFERENCE LEAGUE",
     "WORLD CUP",
-    "EURO",
+    "EURO 2024",
+    "EURO 2028",
     "COPA AMERICA",
     "AFRICAN CUP",
+    "AFCON",
     "MLS",
     "EREDIVISIE",
     "PRIMEIRA LIGA",
-    "SUPER LIG"
+    "SUPER LIG",
+    "SAUDI PRO LEAGUE",
+    "BRASILEIRAO",
+    "ARGENTINE PRIMERA"
   ],
   
-  // Number of matches to include in multi-match posts
   MIN_MATCHES_FOR_RECAP: 3,
-  MAX_MATCHES_FOR_RECAP: 8
+  MAX_MATCHES_FOR_RECAP: 6
 };
 
 // ============================================
-// MASTER INSTRUCTION - MULTI MATCH ANALYSIS
+// MASTER INSTRUCTION - MULTI MATCH (DETAILED)
 // ============================================
-const MASTER_INSTRUCTION_MULTI = `You are an elite social media editor for "Global Score News" - a top football page. Create VIRAL, engaging posts covering multiple match results.
+const MASTER_INSTRUCTION_MULTI = `You are the HEAD EDITOR of "Global Score News" - the most engaging football page on Facebook. Create VIRAL posts that make people NEED to join our Telegram.
 
-YOUR GOAL: Hook readers and drive them to join Telegram.
+YOUR MISSION: Write a comprehensive, exciting matchday recap that hooks readers and drives Telegram signups.
 
-STYLE RULES:
-1. FIRST LINE: Explosive hook with emojis (🔥⚽💥🚨)
-2. GROUP matches by league
-3. For each match: Result + ONE sharp insight (who starred, key moment, what it means)
-4. Use symbols: ✅ (win) 🤝 (draw) ❌ (loss) 💥 (big upset) 🔥 (high score)
-5. Keep insights SHORT but PUNCHY (max 10 words each)
-6. Add separator line before CTA
-7. End with STRONG Telegram CTA - make them WANT to join
+STRICT FORMAT TO FOLLOW:
+
+1. HEADLINE (Line 1):
+   - Start with attention-grabbing emoji (🚨🔥⚽💥)
+   - Make it dramatic but accurate
+   - Example: "🚨 MATCHDAY MADNESS! 12 Goals, 2 Upsets & Drama Everywhere! ⚽🔥"
+
+2. INTRO (Line 2-3):
+   - One punchy line setting the scene
+   - Example: "What a night of football! Here's everything you need to know 👇"
+
+3. FOR EACH MATCH INCLUDE:
+   ⚽ [Home Team] [Score] [Away Team] [Result Emoji]
+   🕐 [Time] | Odds: [Home] | [Draw] | [Away]
+   ↳ [DETAILED ANALYSIS - 30-50 words per match]:
+      • Who was the star player and why
+      • Key moment that decided the game
+      • What this means for the table/season
+      • Any controversy or drama
+      • Stats if impressive (possession, shots, etc.)
+
+4. RESULT EMOJIS:
+   ✅ = Home win
+   ❌ = Home loss
+   🤝 = Draw
+   💥 = Upset/shock result
+   🔥 = High-scoring game (4+ goals)
+
+5. AFTER ALL MATCHES - "WHAT WE LEARNED" SECTION:
+   🎯 WHAT WE LEARNED TODAY:
+   • [Key takeaway 1]
+   • [Key takeaway 2]
+   • [Key takeaway 3]
+   • [Key takeaway 4]
+
+6. TELEGRAM CTA (MUST BE EXACTLY):
+   ━━━━━━━━━━━━━━━━━━━━━
+
+   💰 Want to WIN with us?
+
+   We post FREE betting tips daily with high accuracy!
+   👉 Join our Telegram: https://t.me/+9uDCOJXm_R1hMzM0
+
+   ✅ Free daily tips
+   ✅ Live match alerts
+   ✅ Expert predictions
+   ✅ Exclusive odds analysis
+
+   Don't miss another winner! 🏆
+
+7. HASHTAGS:
+   Include 10-15 relevant hashtags
+   Always include: #GlobalScoreNews #Football
+   Add league tags and team tags
+
+ANALYSIS STYLE:
+- Be PASSIONATE but professional
+- Use strong action words (demolished, stunned, dominated, crushed)
+- Include player names when possible
+- Reference the odds to add betting context
+- Make predictions about what happens next
+- Use emojis strategically (not too many)
+- Write like a top sports journalist
+
+WORD COUNT: 250-400 words total (excluding hashtags)
+
+OUTPUT FORMAT (JSON only, no markdown):
+{
+  "post_text": "<complete facebook post with all sections>",
+  "hashtags": ["#GlobalScoreNews", "#Football", ...]
+}`;
+
+// ============================================
+// MASTER INSTRUCTION - SINGLE MATCH (DETAILED)
+// ============================================
+const MASTER_INSTRUCTION_SINGLE = `You are the HEAD EDITOR of "Global Score News." Create an in-depth, engaging post about this single match.
 
 FORMAT:
-🔥 [HOOK - make it irresisthat] ⚽
 
-📊 [LEAGUE NAME]
-Team A X-X Team B [emoji]
-↳ [Short punchy insight]
+1. HEADLINE with emojis (🚨⚽🔥)
 
-Team C X-X Team D [emoji]
-↳ [Short punchy insight]
+2. MATCH INFO:
+   ⚽ [Home] [Score] [Away]
+   🕐 [Time] | Odds: [Home] | [Draw] | [Away]
 
-📊 [NEXT LEAGUE]
-...
+3. DETAILED ANALYSIS (80-120 words):
+   - What happened in the game
+   - Who was the star player
+   - Key moments and turning points
+   - Tactical observations
+   - What this result means
+   - Any records broken or milestones
 
-━━━━━━━━━━━━━━━━━━━━━
+4. QUICK STATS (if available):
+   📈 Possession, shots, corners, etc.
 
-💰 Want FREE betting tips & predictions?
-👉 Join our Telegram: https://t.me/+9uDCOJXm_R1hMzM0
-🎯 Daily tips • Live alerts • Expert analysis
+5. WHAT'S NEXT:
+   - Upcoming fixtures for these teams
+   - Table implications
 
-[hashtags]
+6. TELEGRAM CTA:
+   ━━━━━━━━━━━━━━━━━━━━━
 
-IMPORTANT:
-- Be energetic but professional
-- Insights must be based ONLY on the data provided
-- If you don't have specific info, focus on the scoreline drama
-- Make EVERY line valuable
-- Total length: 150-300 words
+   💰 Get FREE betting tips daily!
+   👉 Join: https://t.me/+9uDCOJXm_R1hMzM0
+   
+   ✅ Expert predictions
+   ✅ Live alerts
+   ✅ High accuracy picks
 
-Output JSON:
+7. HASHTAGS (8-12)
+
+STYLE: Passionate, analytical, professional
+WORD COUNT: 150-200 words
+
+OUTPUT JSON only:
 {
-  "post_text": "<complete facebook post>",
+  "post_text": "<complete post>",
   "hashtags": ["#GlobalScoreNews", ...]
 }`;
 
 // ============================================
-// SINGLE MATCH INSTRUCTION
+// MASTER INSTRUCTION - LIVE MATCHES
 // ============================================
-const MASTER_INSTRUCTION_SINGLE = `You are an elite social media editor for "Global Score News." Create an engaging post about this match.
+const MASTER_INSTRUCTION_LIVE = `You are the HEAD EDITOR of "Global Score News." Create an urgent, exciting LIVE update post.
 
-RULES:
-1. Hook first line with 1-2 emojis
-2. Cover the key story (winner, standout player, what's at stake)
-3. 60-100 words
-4. End with Telegram CTA: "Free tips + alerts 👉 https://t.me/+9uDCOJXm_R1hMzM0"
-5. Add hashtags
+FORMAT:
 
-Output JSON:
+1. URGENT HEADLINE:
+   🔴 LIVE NOW! [Exciting hook about what's happening]
+
+2. CURRENT SCORES (all live matches):
+   ⚽ [Home] [Score] [Away] ⏱️ [Minute]'
+   ↳ [What's happening - 15-20 words]
+
+3. KEY ACTION:
+   - Goals scored
+   - Red cards
+   - Penalties
+   - Injury drama
+
+4. ODDS UPDATE (if available):
+   📊 Live odds shifting!
+
+5. CTA:
+   ━━━━━━━━━━━━━━━━━━━━━
+
+   🔔 Get LIVE alerts on Telegram!
+   👉 https://t.me/+9uDCOJXm_R1hMzM0
+   
+   Never miss a goal! ⚽
+
+6. HASHTAGS
+
+STYLE: Urgent, exciting, real-time feel
+WORD COUNT: 100-150 words
+
+OUTPUT JSON only:
 {
-  "post_text": "<facebook post>",
-  "hashtags": ["#GlobalScoreNews", ...]
+  "post_text": "<complete post>",
+  "hashtags": ["#GlobalScoreNews", "#LIVE", ...]
 }`;
 
 // ============================================
@@ -144,6 +253,36 @@ function getRandomInt(min, max) {
   return Math.floor(Math.random() * (max - min + 1)) + min;
 }
 
+function formatTime(timestamp) {
+  if (!timestamp) return null;
+  try {
+    const date = new Date(timestamp);
+    return date.toLocaleTimeString('en-GB', { 
+      hour: '2-digit', 
+      minute: '2-digit',
+      timeZoneName: 'short'
+    });
+  } catch {
+    return null;
+  }
+}
+
+function formatOdds(odds) {
+  if (!odds) return null;
+  
+  const home = odds.home || odds["1"] || odds.homeWin || null;
+  const draw = odds.draw || odds["X"] || odds.drawOdds || null;
+  const away = odds.away || odds["2"] || odds.awayWin || null;
+  
+  if (!home && !draw && !away) return null;
+  
+  return {
+    home: home ? parseFloat(home).toFixed(2) : "-",
+    draw: draw ? parseFloat(draw).toFixed(2) : "-",
+    away: away ? parseFloat(away).toFixed(2) : "-"
+  };
+}
+
 // ============================================
 // HISTORY MANAGEMENT
 // ============================================
@@ -154,17 +293,19 @@ function ensureDataDir() {
 
 function loadHistory() {
   ensureDataDir();
-  if (!existsSync(POSTED_FILE)) return { posts: [], dailyCount: {}, lastPost: null, lastRecap: null };
+  if (!existsSync(POSTED_FILE)) {
+    return { posts: [], dailyCount: {}, lastPost: null, lastRecap: null, lastLive: null };
+  }
   try {
     return JSON.parse(readFileSync(POSTED_FILE, 'utf-8'));
   } catch {
-    return { posts: [], dailyCount: {}, lastPost: null, lastRecap: null };
+    return { posts: [], dailyCount: {}, lastPost: null, lastRecap: null, lastLive: null };
   }
 }
 
 function saveHistory(history) {
   ensureDataDir();
-  if (history.posts.length > 200) history.posts = history.posts.slice(-200);
+  if (history.posts.length > 300) history.posts = history.posts.slice(-300);
   
   const cutoff = new Date();
   cutoff.setDate(cutoff.getDate() - 7);
@@ -194,26 +335,31 @@ function getHoursSinceLastRecap(history) {
   return (new Date() - new Date(history.lastRecap)) / (1000 * 60 * 60);
 }
 
+function getHoursSinceLastLive(history) {
+  if (!history.lastLive) return 999;
+  return (new Date() - new Date(history.lastLive)) / (1000 * 60 * 60);
+}
+
 function createMatchKey(m) {
-  const home = m.homeName || m.homeFirstName || "";
-  const away = m.awayName || m.awayFirstName || "";
+  const home = m.homeName || m.homeFirstName || m.home_team || "";
+  const away = m.awayName || m.awayFirstName || m.away_team || "";
   const date = getTodayDate();
   return `${date}_${home}_${away}`;
 }
 
 function wasPosted(history, key) {
-  return history.posts.some(p => p.matchKey === key);
+  const recentPosts = history.posts.slice(-50);
+  return recentPosts.some(p => p.matchKey === key);
 }
 
 function recordPost(history, matches, postType) {
   const today = getTodayDate();
   const now = new Date().toISOString();
   
-  // Record each match
   for (const m of matches) {
     history.posts.push({
       matchKey: createMatchKey(m),
-      matchInfo: `${m.home_team} vs ${m.away_team}`,
+      matchInfo: `${m.home_team || m.homeName} vs ${m.away_team || m.awayName}`,
       postedAt: now,
       postType
     });
@@ -222,15 +368,14 @@ function recordPost(history, matches, postType) {
   history.dailyCount[today] = (history.dailyCount[today] || 0) + 1;
   history.lastPost = now;
   
-  if (postType === 'recap') {
-    history.lastRecap = now;
-  }
+  if (postType === 'recap') history.lastRecap = now;
+  if (postType === 'live') history.lastLive = now;
   
   saveHistory(history);
 }
 
 // ============================================
-// SHOULD POST NOW
+// SHOULD POST NOW (Random timing)
 // ============================================
 
 function shouldPostNow(history) {
@@ -241,18 +386,43 @@ function shouldPostNow(history) {
   const seed = parseInt(getTodayDate().replace(/-/g, ''));
   const target = CONFIG.MIN_POSTS_PER_DAY + (seed % (CONFIG.MAX_POSTS_PER_DAY - CONFIG.MIN_POSTS_PER_DAY + 1));
   
-  console.log(`\n📊 Check: ${count}/${target} posts | ${hoursSince.toFixed(1)}h since last`);
+  console.log(`\n📊 Post Check:`);
+  console.log(`   Posts today: ${count}/${target}`);
+  console.log(`   Hours since last: ${hoursSince.toFixed(1)}h`);
+  console.log(`   Current hour (UTC): ${hour}`);
   
-  if (count >= target) { console.log("   ❌ Daily limit"); return false; }
-  if (hoursSince < CONFIG.MIN_HOURS_BETWEEN_POSTS) { console.log("   ❌ Too soon"); return false; }
+  if (count >= target) {
+    console.log("   ❌ Daily limit reached");
+    return false;
+  }
+  
+  if (hoursSince < CONFIG.MIN_HOURS_BETWEEN_POSTS) {
+    console.log("   ❌ Too soon since last post");
+    return false;
+  }
   
   let chance = CONFIG.BASE_POST_CHANCE;
-  if (CONFIG.QUIET_HOURS.includes(hour)) chance *= 0.3;
-  else if (CONFIG.PEAK_HOURS.includes(hour)) chance *= 1.5;
+  
+  if (CONFIG.QUIET_HOURS.includes(hour)) {
+    chance *= 0.3;
+    console.log("   🌙 Quiet hour - reduced chance");
+  } else if (CONFIG.PEAK_HOURS.includes(hour)) {
+    chance *= 1.5;
+    console.log("   🔥 Peak hour - increased chance");
+  }
+  
+  // If behind schedule, increase chance
+  const expectedByNow = (hour / 24) * target;
+  if (count < expectedByNow - 2) {
+    chance *= 1.5;
+    console.log("   ⚡ Behind schedule - boosted chance");
+  }
   
   const roll = Math.random();
   const willPost = roll < chance;
-  console.log(`   🎲 ${(chance * 100).toFixed(0)}% chance | ${willPost ? '✅ POST' : '⏭️ SKIP'}`);
+  
+  console.log(`   🎲 Chance: ${(chance * 100).toFixed(0)}% | Roll: ${(roll * 100).toFixed(0)}%`);
+  console.log(`   ${willPost ? '✅ WILL POST' : '⏭️ SKIPPING'}`);
   
   return willPost;
 }
@@ -262,42 +432,49 @@ function shouldPostNow(history) {
 // ============================================
 
 async function fetchMatches() {
-  console.log("\n📡 Fetching matches...");
-  
-  // Try live matches
-  let res = await fetch("https://api.sportdb.dev/api/flashscore/football/live", {
-    headers: { "X-API-Key": SPORTDB_API_KEY }
-  });
+  console.log("\n📡 Fetching matches from SportDB...");
   
   let allMatches = [];
   
-  if (res.ok) {
-    const data = await res.json();
-    const matches = Array.isArray(data) ? data : (data.matches || data.events || data.data || []);
-    allMatches = [...matches];
-    console.log(`   ${matches.length} live matches`);
+  // Fetch live matches
+  try {
+    const res = await fetch("https://api.sportdb.dev/api/flashscore/football/live", {
+      headers: { "X-API-Key": SPORTDB_API_KEY }
+    });
+    
+    if (res.ok) {
+      const data = await res.json();
+      const matches = Array.isArray(data) ? data : (data.matches || data.events || data.data || []);
+      allMatches = [...matches];
+      console.log(`   📺 ${matches.length} live matches`);
+    }
+  } catch (e) {
+    console.log(`   ⚠️ Live fetch error: ${e.message}`);
   }
   
-  // Also get today's matches for finished games
-  res = await fetch("https://api.sportdb.dev/api/flashscore/football/today", {
-    headers: { "X-API-Key": SPORTDB_API_KEY }
-  });
-  
-  if (res.ok) {
-    const data = await res.json();
-    const matches = Array.isArray(data) ? data : (data.matches || data.events || data.data || []);
+  // Fetch today's matches
+  try {
+    const res = await fetch("https://api.sportdb.dev/api/flashscore/football/today", {
+      headers: { "X-API-Key": SPORTDB_API_KEY }
+    });
     
-    // Add finished matches not already in live
-    for (const m of matches) {
-      const key = `${m.homeName || m.homeFirstName}_${m.awayName || m.awayFirstName}`;
-      const exists = allMatches.some(existing => 
-        `${existing.homeName || existing.homeFirstName}_${existing.awayName || existing.awayFirstName}` === key
-      );
-      if (!exists) {
-        allMatches.push(m);
+    if (res.ok) {
+      const data = await res.json();
+      const matches = Array.isArray(data) ? data : (data.matches || data.events || data.data || []);
+      
+      // Add non-duplicate matches
+      for (const m of matches) {
+        const key = `${m.homeName || m.homeFirstName}_${m.awayName || m.awayFirstName}`;
+        const exists = allMatches.some(existing =>
+          `${existing.homeName || existing.homeFirstName}_${existing.awayName || existing.awayFirstName}` === key
+        );
+        if (!exists) allMatches.push(m);
       }
+      
+      console.log(`   📅 ${allMatches.length} total matches`);
     }
-    console.log(`   ${allMatches.length} total matches`);
+  } catch (e) {
+    console.log(`   ⚠️ Today fetch error: ${e.message}`);
   }
   
   return allMatches;
@@ -315,144 +492,237 @@ function isTopLeague(leagueName) {
 
 function getMatchStatus(m) {
   const status = (m.eventStage || m.status || "").toUpperCase();
-  if (status.includes("HALF") || status === "LIVE" || status === "1H" || status === "2H") return "LIVE";
-  if (["FINISHED", "ENDED", "FT", "AET", "AFTER ET", "AFTER PEN"].includes(status)) return "FT";
-  if (status.includes("HT") || status === "HALFTIME") return "HT";
+  if (status.includes("1ST") || status.includes("2ND") || status === "LIVE" || status === "1H" || status === "2H") return "LIVE";
+  if (["FINISHED", "ENDED", "FT", "AET", "AFTER ET", "AFTER PEN", "FULL TIME"].includes(status)) return "FT";
+  if (status.includes("HT") || status === "HALFTIME" || status === "HALF TIME") return "HT";
+  if (status.includes("POSTPONED") || status.includes("CANCELLED")) return "CANCELLED";
   return "NS";
 }
 
 function transformMatch(raw) {
+  const status = getMatchStatus(raw);
+  
+  // Extract kick-off time
+  let kickoffTime = null;
+  if (raw.startTime || raw.dateTime || raw.kickoff) {
+    kickoffTime = formatTime(raw.startTime || raw.dateTime || raw.kickoff);
+  }
+  
+  // Extract odds
+  const odds = formatOdds(raw.odds || raw.preMatchOdds || null);
+  
+  // Extract minute for live games
+  let minute = null;
+  if (raw.gameTime && raw.gameTime !== "-1") {
+    minute = raw.gameTime;
+  } else if (raw.minute) {
+    minute = raw.minute;
+  }
+  
   return {
-    competition: raw.leagueName || raw.tournamentName || "",
-    home_team: raw.homeName || raw.homeFirstName || "Unknown",
-    away_team: raw.awayName || raw.awayFirstName || "Unknown",
-    status: getMatchStatus(raw),
-    minute: raw.gameTime !== "-1" ? raw.gameTime : null,
+    competition: raw.leagueName || raw.tournamentName || raw.league || "",
+    home_team: raw.homeName || raw.homeFirstName || raw.home || "Unknown",
+    away_team: raw.awayName || raw.awayFirstName || raw.away || "Unknown",
+    status: status,
+    minute: minute,
+    kickoff_time: kickoffTime,
     score: {
       home: parseInt(raw.homeScore) || parseInt(raw.homeFullTimeScore) || 0,
       away: parseInt(raw.awayScore) || parseInt(raw.awayFullTimeScore) || 0
     },
-    odds: raw.odds || null,
+    odds: odds,
     raw: raw
   };
 }
 
-function getTopMatches(matches, history) {
-  // Filter valid matches
-  const valid = matches.filter(m => 
-    (m.homeName || m.homeFirstName) && 
+function categorizeMatches(matches, history) {
+  const valid = matches.filter(m =>
+    (m.homeName || m.homeFirstName) &&
     (m.awayName || m.awayFirstName)
   );
   
-  // Transform all
   const transformed = valid.map(transformMatch);
   
-  // Get finished matches from top leagues (not yet posted)
-  const topFinished = transformed.filter(m => 
-    m.status === "FT" && 
-    isTopLeague(m.competition) &&
-    !wasPosted(history, createMatchKey(m.raw))
-  );
+  // Categorize by status and league
+  const result = {
+    liveTop: [],
+    liveOther: [],
+    finishedTop: [],
+    finishedOther: [],
+    upcomingTop: [],
+    all: transformed
+  };
   
-  // Get live matches from top leagues
-  const topLive = transformed.filter(m => 
-    (m.status === "LIVE" || m.status === "HT") && 
-    isTopLeague(m.competition)
-  );
-  
-  // Get high-scoring finished matches (exciting games)
-  const highScoring = transformed.filter(m => 
-    m.status === "FT" && 
-    (m.score.home + m.score.away) >= 4 &&
-    !wasPosted(history, createMatchKey(m.raw))
-  );
-  
-  // Combine and dedupe
-  const combined = [...topFinished, ...topLive, ...highScoring];
-  const unique = [];
-  const seen = new Set();
-  
-  for (const m of combined) {
-    const key = `${m.home_team}_${m.away_team}`;
-    if (!seen.has(key)) {
-      seen.add(key);
-      unique.push(m);
+  for (const m of transformed) {
+    const isTop = isTopLeague(m.competition);
+    const wasAlreadyPosted = wasPosted(history, createMatchKey(m));
+    
+    if (m.status === "LIVE" || m.status === "HT") {
+      if (isTop) result.liveTop.push(m);
+      else result.liveOther.push(m);
+    } else if (m.status === "FT") {
+      if (!wasAlreadyPosted) {
+        if (isTop) result.finishedTop.push(m);
+        else result.finishedOther.push(m);
+      }
+    } else if (m.status === "NS") {
+      if (isTop) result.upcomingTop.push(m);
     }
   }
   
   // Sort by league importance
-  unique.sort((a, b) => {
-    const aIndex = CONFIG.TOP_LEAGUES.findIndex(l => a.competition.toUpperCase().includes(l));
-    const bIndex = CONFIG.TOP_LEAGUES.findIndex(l => b.competition.toUpperCase().includes(l));
-    return (aIndex === -1 ? 999 : aIndex) - (bIndex === -1 ? 999 : bIndex);
-  });
+  const sortByLeague = (a, b) => {
+    const aIdx = CONFIG.TOP_LEAGUES.findIndex(l => a.competition.toUpperCase().includes(l));
+    const bIdx = CONFIG.TOP_LEAGUES.findIndex(l => b.competition.toUpperCase().includes(l));
+    return (aIdx === -1 ? 999 : aIdx) - (bIdx === -1 ? 999 : bIdx);
+  };
   
-  return unique;
+  result.liveTop.sort(sortByLeague);
+  result.finishedTop.sort(sortByLeague);
+  result.upcomingTop.sort(sortByLeague);
+  
+  return result;
 }
 
-function groupMatchesByLeague(matches) {
+function groupByLeague(matches) {
   const groups = {};
-  
   for (const m of matches) {
-    const league = m.competition || "Other";
+    const league = m.competition || "Other Leagues";
     if (!groups[league]) groups[league] = [];
     groups[league].push(m);
   }
-  
   return groups;
+}
+
+// ============================================
+// POST TYPE DECISION
+// ============================================
+
+function decidePostType(categorized, history) {
+  const hoursSinceRecap = getHoursSinceLastRecap(history);
+  const hoursSinceLive = getHoursSinceLastLive(history);
+  
+  const liveCount = categorized.liveTop.length;
+  const finishedCount = categorized.finishedTop.length;
+  
+  console.log(`\n🎯 Post Type Decision:`);
+  console.log(`   Live top matches: ${liveCount}`);
+  console.log(`   Finished top matches: ${finishedCount}`);
+  console.log(`   Hours since recap: ${hoursSinceRecap.toFixed(1)}`);
+  console.log(`   Hours since live: ${hoursSinceLive.toFixed(1)}`);
+  
+  // Priority 1: Live matches update (if 3+ live top games and been a while)
+  if (liveCount >= 3 && hoursSinceLive >= 1) {
+    console.log("   → LIVE UPDATE");
+    return { type: "live", matches: categorized.liveTop.slice(0, 6) };
+  }
+  
+  // Priority 2: Recap of finished matches (if enough games and been 3+ hours)
+  if (finishedCount >= CONFIG.MIN_MATCHES_FOR_RECAP && hoursSinceRecap >= 3) {
+    console.log("   → MULTI-MATCH RECAP");
+    return { type: "recap", matches: categorized.finishedTop.slice(0, CONFIG.MAX_MATCHES_FOR_RECAP) };
+  }
+  
+  // Priority 3: Single finished match
+  if (finishedCount >= 1) {
+    const match = categorized.finishedTop[getRandomInt(0, Math.min(2, finishedCount - 1))];
+    console.log("   → SINGLE MATCH");
+    return { type: "single", matches: [match] };
+  }
+  
+  // Priority 4: Live single match
+  if (liveCount >= 1) {
+    console.log("   → SINGLE LIVE");
+    return { type: "live_single", matches: [categorized.liveTop[0]] };
+  }
+  
+  // Priority 5: Include non-top league finished matches
+  if (categorized.finishedOther.length >= 1) {
+    const match = categorized.finishedOther[0];
+    console.log("   → OTHER LEAGUE MATCH");
+    return { type: "single", matches: [match] };
+  }
+  
+  console.log("   → NO CONTENT");
+  return null;
 }
 
 // ============================================
 // GROQ API
 // ============================================
 
-async function generateMultiMatchPost(matches) {
-  console.log("\n🤖 Generating multi-match post...");
+async function generatePost(postType, matches) {
+  console.log(`\n🤖 Generating ${postType} post...`);
   
-  const grouped = groupMatchesByLeague(matches);
-  
-  // Build match data for prompt
+  let instruction;
   let matchData = "";
+  
+  // Build match data string
+  const grouped = groupByLeague(matches);
+  
   for (const [league, games] of Object.entries(grouped)) {
-    matchData += `\n${league}:\n`;
+    matchData += `\n📊 ${league.toUpperCase()}\n`;
+    
     for (const g of games) {
-      const resultEmoji = g.score.home > g.score.away ? "✅" : 
-                          g.score.home < g.score.away ? "❌" : "🤝";
-      matchData += `- ${g.home_team} ${g.score.home}-${g.score.away} ${g.away_team} ${resultEmoji}\n`;
-      matchData += `  Status: ${g.status}`;
-      if (g.minute) matchData += ` (${g.minute}')`;
-      matchData += "\n";
+      // Result emoji
+      let emoji = "🤝";
+      if (g.score.home > g.score.away) emoji = "✅";
+      else if (g.score.home < g.score.away) emoji = "❌";
+      if (g.score.home + g.score.away >= 4) emoji = "🔥";
+      if (g.score.home + g.score.away >= 6) emoji = "💥";
+      
+      matchData += `\n⚽ ${g.home_team} ${g.score.home}-${g.score.away} ${g.away_team} ${emoji}\n`;
+      
+      if (g.kickoff_time) {
+        matchData += `🕐 Time: ${g.kickoff_time}\n`;
+      }
+      
+      if (g.odds) {
+        matchData += `📊 Odds: ${g.odds.home} | ${g.odds.draw} | ${g.odds.away}\n`;
+      }
+      
+      if (g.minute && (g.status === "LIVE" || g.status === "HT")) {
+        matchData += `⏱️ Minute: ${g.minute}'\n`;
+      }
+      
+      matchData += `Status: ${g.status}\n`;
     }
   }
   
-  const prompt = `${MASTER_INSTRUCTION_MULTI}
-
-MATCHES TO COVER:
-${matchData}
-
-Create an engaging recap post. Return JSON only.`;
-
-  return await callGroq(prompt);
-}
-
-async function generateSingleMatchPost(match) {
-  console.log("\n🤖 Generating single match post...");
+  // Choose instruction based on post type
+  switch (postType) {
+    case "live":
+      instruction = MASTER_INSTRUCTION_LIVE;
+      break;
+    case "recap":
+      instruction = MASTER_INSTRUCTION_MULTI;
+      break;
+    case "single":
+    case "live_single":
+    default:
+      instruction = MASTER_INSTRUCTION_SINGLE;
+  }
   
-  const prompt = `${MASTER_INSTRUCTION_SINGLE}
+  const prompt = `${instruction}
 
-MATCH:
-${match.home_team} ${match.score.home}-${match.score.away} ${match.away_team}
-Competition: ${match.competition}
-Status: ${match.status}${match.minute ? ` (${match.minute}')` : ''}
-${match.odds ? `Odds: ${match.odds.home || '-'} | ${match.odds.draw || '-'} | ${match.odds.away || '-'}` : ''}
+━━━━━━━━━━━━━━━━━━━━━
+MATCH DATA:
+━━━━━━━━━━━━━━━━━━━━━
+${matchData}
+━━━━━━━━━━━━━━━━━━━━━
 
-Create an engaging post. Return JSON only.`;
+Generate the post now. Return ONLY valid JSON, no markdown code blocks.`;
 
   return await callGroq(prompt);
 }
 
 async function callGroq(prompt) {
-  const models = ["llama-3.3-70b-versatile", "llama-3.1-8b-instant", "mixtral-8x7b-32768"];
+  const models = [
+    "llama-3.3-70b-versatile",
+    "llama-3.1-70b-versatile",
+    "llama-3.1-8b-instant",
+    "mixtral-8x7b-32768"
+  ];
   
   for (const model of models) {
     try {
@@ -467,42 +737,71 @@ async function callGroq(prompt) {
         body: JSON.stringify({
           model,
           messages: [
-            { role: "system", content: "You are a viral social media expert. Respond with valid JSON only. No markdown code blocks." },
-            { role: "user", content: prompt }
+            {
+              role: "system",
+              content: "You are an elite sports journalist and social media expert. Create engaging, viral content. Always respond with valid JSON only - no markdown, no code blocks, no extra text."
+            },
+            {
+              role: "user",
+              content: prompt
+            }
           ],
-          temperature: 0.8,
-          max_tokens: 1500
+          temperature: 0.85,
+          max_tokens: 2000
         })
       });
       
       if (res.status === 429) {
-        console.log("   ⚠️ Rate limited, waiting...");
+        console.log("   ⚠️ Rate limited, waiting 5s...");
         await delay(5000);
         continue;
       }
       
-      if (!res.ok) continue;
+      if (!res.ok) {
+        console.log(`   ❌ API error: ${res.status}`);
+        continue;
+      }
       
       const data = await res.json();
       let text = data?.choices?.[0]?.message?.content || "";
       
+      if (!text) {
+        console.log("   ⚠️ Empty response");
+        continue;
+      }
+      
       // Clean JSON
       text = text.trim();
-      if (text.startsWith("```")) text = text.replace(/```json?|```/g, "").trim();
+      
+      // Remove markdown code blocks
+      if (text.startsWith("```json")) {
+        text = text.slice(7);
+      } else if (text.startsWith("```")) {
+        text = text.slice(3);
+      }
+      if (text.endsWith("```")) {
+        text = text.slice(0, -3);
+      }
+      text = text.trim();
+      
+      // Find JSON object
       const start = text.indexOf("{");
       const end = text.lastIndexOf("}");
-      if (start !== -1 && end !== -1) text = text.slice(start, end + 1);
+      if (start !== -1 && end !== -1 && end > start) {
+        text = text.slice(start, end + 1);
+      }
       
-      console.log("   ✅ Generated");
-      return JSON.parse(text);
+      const parsed = JSON.parse(text);
+      console.log("   ✅ Generated successfully");
+      return parsed;
       
     } catch (e) {
-      console.log(`   ❌ ${e.message}`);
+      console.log(`   ❌ Error: ${e.message}`);
       continue;
     }
   }
   
-  throw new Error("All models failed");
+  throw new Error("All Groq models failed");
 }
 
 // ============================================
@@ -522,39 +821,35 @@ async function postToFacebook(message) {
   
   if (!res.ok) {
     const err = await res.text();
-    throw new Error(`Facebook: ${res.status} - ${err}`);
+    throw new Error(`Facebook API error ${res.status}: ${err}`);
   }
   
-  console.log("   ✅ Posted");
-  return res.json();
+  const data = await res.json();
+  console.log("   ✅ Posted successfully");
+  return data;
 }
 
 // ============================================
-// DECIDE POST TYPE
+// BUILD FINAL MESSAGE
 // ============================================
 
-function decidePostType(topMatches, history) {
-  const hoursSinceRecap = getHoursSinceLastRecap(history);
-  const hasEnoughForRecap = topMatches.length >= CONFIG.MIN_MATCHES_FOR_RECAP;
+function buildMessage(response) {
+  let message = response.post_text || "";
   
-  console.log(`\n🎯 Post type decision:`);
-  console.log(`   Top matches available: ${topMatches.length}`);
-  console.log(`   Hours since last recap: ${hoursSinceRecap.toFixed(1)}`);
-  
-  // Do a recap every 3-4 hours if we have enough matches
-  if (hasEnoughForRecap && hoursSinceRecap >= 3) {
-    console.log("   → MULTI-MATCH RECAP");
-    return "recap";
+  // Add hashtags if not already included
+  if (response.hashtags && response.hashtags.length > 0) {
+    const hashtagsInPost = message.includes("#GlobalScoreNews");
+    if (!hashtagsInPost) {
+      message += "\n\n" + response.hashtags.join(" ");
+    }
   }
   
-  // Otherwise single match post
-  if (topMatches.length > 0) {
-    console.log("   → SINGLE MATCH");
-    return "single";
+  // Ensure Telegram link is correct
+  if (!message.includes("t.me/+9uDCOJXm_R1hMzM0")) {
+    message = message.replace(/t\.me\/\+\w+/g, "t.me/+9uDCOJXm_R1hMzM0");
   }
   
-  console.log("   → NO SUITABLE CONTENT");
-  return null;
+  return message.trim();
 }
 
 // ============================================
@@ -562,8 +857,9 @@ function decidePostType(topMatches, history) {
 // ============================================
 
 async function main() {
-  console.log("🚀 Global Score News v3.0");
-  console.log("=".repeat(50));
+  console.log("═".repeat(50));
+  console.log("🚀 GLOBAL SCORE NEWS v4.0");
+  console.log("═".repeat(50));
   console.log(`⏰ ${new Date().toISOString()}`);
   
   assertEnv();
@@ -572,82 +868,75 @@ async function main() {
   
   // Check if we should post
   if (!FORCE_POST && !shouldPostNow(history)) {
-    console.log("\n👋 Skipping this run.");
+    console.log("\n👋 Skipping this run. See you next time!");
     return;
   }
   
-  if (FORCE_POST) console.log("\n⚡ FORCE POST MODE");
+  if (FORCE_POST) {
+    console.log("\n⚡ FORCE POST MODE ACTIVATED");
+  }
   
-  // Fetch all matches
+  // Fetch matches
   const allMatches = await fetchMatches();
-  if (!allMatches?.length) {
-    console.log("\n⚠️ No matches available.");
+  
+  if (!allMatches || allMatches.length === 0) {
+    console.log("\n⚠️ No matches available. Exiting.");
     return;
   }
   
-  // Get top matches
-  const topMatches = getTopMatches(allMatches, history);
-  console.log(`\n🏆 Found ${topMatches.length} top matches`);
+  // Categorize matches
+  const categorized = categorizeMatches(allMatches, history);
   
-  if (topMatches.length === 0) {
-    console.log("⚠️ No top matches to post about.");
+  console.log(`\n📊 Match Summary:`);
+  console.log(`   🔴 Live (top leagues): ${categorized.liveTop.length}`);
+  console.log(`   ✅ Finished (top leagues): ${categorized.finishedTop.length}`);
+  console.log(`   📅 Upcoming (top leagues): ${categorized.upcomingTop.length}`);
+  
+  // Decide what to post
+  const decision = decidePostType(categorized, history);
+  
+  if (!decision) {
+    console.log("\n⚠️ No suitable content to post. Exiting.");
     return;
   }
   
-  // Decide post type
-  const postType = decidePostType(topMatches, history);
-  
-  if (!postType) {
-    console.log("⚠️ No suitable content.");
-    return;
+  // Log selected matches
+  console.log(`\n📋 Selected ${decision.matches.length} match(es):`);
+  for (const m of decision.matches) {
+    console.log(`   • ${m.home_team} ${m.score.home}-${m.score.away} ${m.away_team}`);
+    console.log(`     ${m.competition} | ${m.status}`);
+    if (m.odds) console.log(`     Odds: ${m.odds.home} | ${m.odds.draw} | ${m.odds.away}`);
   }
   
-  let response;
-  let matchesToRecord = [];
-  
-  if (postType === "recap") {
-    // Multi-match recap
-    const matchesForRecap = topMatches.slice(0, CONFIG.MAX_MATCHES_FOR_RECAP);
-    matchesToRecord = matchesForRecap;
-    
-    console.log(`\n📋 Creating recap with ${matchesForRecap.length} matches:`);
-    for (const m of matchesForRecap) {
-      console.log(`   • ${m.home_team} ${m.score.home}-${m.score.away} ${m.away_team} (${m.competition})`);
-    }
-    
-    response = await generateMultiMatchPost(matchesForRecap);
-    
-  } else {
-    // Single match
-    const match = topMatches[getRandomInt(0, Math.min(2, topMatches.length - 1))];
-    matchesToRecord = [match];
-    
-    console.log(`\n📋 Single match: ${match.home_team} ${match.score.home}-${match.score.away} ${match.away_team}`);
-    
-    response = await generateSingleMatchPost(match);
-  }
+  // Generate post
+  const response = await generatePost(decision.type, decision.matches);
   
   // Build final message
-  const message = response.post_text + 
-    (response.hashtags?.length ? "\n\n" + response.hashtags.join(" ") : "\n\n#GlobalScoreNews #Football");
+  const message = buildMessage(response);
   
   // Preview
-  console.log("\n" + "=".repeat(50));
+  console.log("\n" + "═".repeat(50));
   console.log("📝 POST PREVIEW:");
-  console.log("=".repeat(50));
+  console.log("═".repeat(50));
   console.log(message);
-  console.log("=".repeat(50));
+  console.log("═".repeat(50));
+  console.log(`📏 Length: ${message.length} characters`);
   
   // Post to Facebook
   const result = await postToFacebook(message);
-  console.log(`\n✅ Posted! ID: ${result.id}`);
   
-  // Record
-  recordPost(history, matchesToRecord.map(m => m.raw || m), postType);
-  console.log(`📊 Today's posts: ${getTodayCount(history)}`);
+  // Record post
+  recordPost(history, decision.matches, decision.type);
+  
+  console.log(`\n✅ SUCCESS!`);
+  console.log(`   Post ID: ${result.id}`);
+  console.log(`   Type: ${decision.type}`);
+  console.log(`   Matches: ${decision.matches.length}`);
+  console.log(`   Today's total: ${getTodayCount(history)} posts`);
 }
 
+// Run
 main().catch((e) => {
-  console.error("\n❌ Error:", e.message);
+  console.error("\n❌ FATAL ERROR:", e.message);
   process.exit(1);
 });
