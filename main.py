@@ -1,28 +1,22 @@
 import requests
 import facebook
 import os
-import json
 import google.generativeai as genai
 import telebot
 from telebot.types import InlineKeyboardMarkup, InlineKeyboardButton
 from datetime import datetime
 
 # --- CONFIGURATION ---
-
-# 1. API & KEYS
-# Your specific RapidAPI Key
+# 1. API KEYS
 RAPIDAPI_KEY = "0c389caf77msh12d8cc6006d5a4bp110476jsnf905c1f437a1"
 RAPIDAPI_HOST = "free-api-live-football-data.p.rapidapi.com"
 
 # Keys from GitHub Secrets
 GEMINI_KEY = os.environ.get("GEMINI_API_KEY")
 FB_TOKEN = os.environ.get("FB_PAGE_ACCESS_TOKEN")
-# Your Telegram Channel Link
-TELEGRAM_INVITE = "https://t.me/+9uDCOJXm_R1hMzM0"
-# Telegram Bot Token (Get from @BotFather)
 TELEGRAM_BOT_TOKEN = os.environ.get("TELEGRAM_BOT_TOKEN") 
-# Your Channel Username (e.g., @GlobalScoreUpdates)
-TELEGRAM_CHANNEL_ID = "@GlobalScoreUpdates" 
+TELEGRAM_CHANNEL_ID = "@GlobalScoreUpdates"
+TELEGRAM_INVITE = "https://t.me/+9uDCOJXm_R1hMzM0"
 
 # 2. AFFILIATE LINKS
 LINK_1XBET = "https://ma-1xbet.com/?bf=695d66e22c1b5_7531017325"
@@ -31,12 +25,10 @@ LINK_STAKE = "https://stake.com/?c=GlobalScoreUpdates"
 
 def get_matches():
     """ 
-    SMART FETCH: Uses 1 API Request to get matches. 
+    Fetches matches and PROTECTS against API errors.
     """
-    # Note: Depending on the specific API documentation, the endpoint might be /fixtures/matches or similar.
-    # We will try a standard matches endpoint for today.
     url = f"https://{RAPIDAPI_HOST}/football-get-matches-by-date"
-    today = datetime.now().strftime("%Y%m%d") # Format YYYYMMDD usually for this API
+    today = datetime.now().strftime("%Y%m%d")
     
     querystring = {"date": today}
     headers = {
@@ -45,146 +37,169 @@ def get_matches():
     }
 
     try:
-        print(f"--- Calling API for Date: {today} ---")
+        print(f"--- API Call: {url} (Date: {today}) ---")
         response = requests.get(url, headers=headers, params=querystring)
         data = response.json()
         
-        # Structure varies by API, assuming standard 'matches' list
-        if 'matches' in data:
-            return data['matches']
-        elif 'response' in data:
-            return data['response']
+        # DEBUG: Print the first 100 chars of response to see what's happening
+        print(f"API Response: {str(data)[:200]}...")
+
+        # 1. Check for specific 'response' list
+        if 'response' in data:
+            matches = data['response']
+            # CRITICAL FIX: Check if 'matches' is actually a List, not a String (Error)
+            if isinstance(matches, list):
+                return matches
+            else:
+                print(f"⚠️ API Error Message: {matches}")
+                return []
+        
+        # 2. Check for 'matches' list
+        elif 'matches' in data:
+            matches = data['matches']
+            if isinstance(matches, list):
+                return matches
+            else:
+                print(f"⚠️ API Error Message: {matches}")
+                return []
+                
         else:
-            print("API Response weird:", data)
+            print("⚠️ Unknown API Structure")
             return []
+
     except Exception as e:
-        print(f"API Failed: {e}")
+        print(f"❌ Connection Failed: {e}")
         return []
 
 def select_best_match(matches):
-    """ Selects a match from big leagues only """
-    # Keywords to find big leagues in the data
+    """ Selects a match but safely checks data types """
+    if not matches: return None
+
     big_leagues = ["Premier League", "La Liga", "Serie A", "Bundesliga", "Champions League", "Ligue 1"]
     
     for match in matches:
-        # Check if match status is Not Started (NS) or similar
-        # API structure varies, usually match['status']
-        league_name = match.get('league', {}).get('name', '') or match.get('leagueName', '')
+        # SAFETY CHECK: Ensure match is a dictionary
+        if not isinstance(match, dict):
+            continue
+
+        # Try to find league name in various common keys
+        league_name = ""
+        if 'league' in match and isinstance(match['league'], dict):
+            league_name = match['league'].get('name', '')
+        elif 'leagueName' in match:
+            league_name = match['leagueName']
         
         if any(top in league_name for top in big_leagues):
             return match
             
-    # If no big match, just take the first one available
-    if matches:
-        return matches[0]
+    # Default to first valid dictionary match
+    for match in matches:
+        if isinstance(match, dict):
+            return match
     return None
 
 def get_ai_prediction(home, away, league):
-    """ 
-    AI generates the Analysis AND the Odds 
-    (Saving us from making an extra API call for odds)
-    """
+    """ Generates Analysis using Gemini """
+    if not GEMINI_KEY:
+        return f"💎 FIX: {home} vs {away}\n🔥 WIN\n💰 High Stake"
+
     genai.configure(api_key=GEMINI_KEY)
     model = genai.GenerativeModel('gemini-pro')
     
     prompt = (
-        f"Act as a professional betting tipper for 'Global Score Updates'. "
+        f"Act as a professional betting expert. "
         f"Match: {home} vs {away} in {league}. "
-        f"Create a betting post with this EXACT structure:\n"
-        f"1. Headline: 💎 PREMIUM VIP FIX 💎\n"
-        f"2. Analysis: 1 sentence why the team will win.\n"
-        f"3. 🧠 PREDICTION: (Pick a market like Over 2.5 Goals or Home Win).\n"
-        f"4. 📊 ODDS: (Estimate the decimal odds, e.g., 1.85).\n"
-        f"5. 🔥 STAKE: High (10/10).\n"
-        f"Use emojis. Do not add links."
+        f"Write a Telegram betting post EXACTLY like this:\n"
+        f"💎 **PREMIUM VIP FIX** 💎\n"
+        f"⚔️ {home} vs {away}\n"
+        f"🏆 {league}\n\n"
+        f"🧠 **ANALYSIS:** (One short sentence why home/away wins)\n"
+        f"🎯 **PREDICTION:** (Pick a market: Home Win / Over 2.5 Goals)\n"
+        f"📊 **ODDS:** (Estimate odds, e.g., 1.85)\n"
+        f"🔥 **STAKE:** 10/10 (Max Bet)\n\n"
+        f"❌ No links. No generic text."
     )
     
     try:
         response = model.generate_content(prompt)
         return response.text.strip()
-    except:
-        return f"💎 PREMIUM FIX: {home} vs {away}\n🧠 PREDICTION: Home Win\n📊 ODDS: 1.80\n🔥 STAKE: High"
+    except Exception as e:
+        print(f"AI Error: {e}")
+        return f"💎 FIX: {home} vs {away}\n🎯 PREDICTION: Home Win\n📊 ODDS: 1.80"
 
 def post_to_telegram(home, away, analysis):
+    if not TELEGRAM_BOT_TOKEN:
+        print("❌ No Telegram Token Found")
+        return
+
     try:
         bot = telebot.TeleBot(TELEGRAM_BOT_TOKEN)
         
-        # Message
         msg = (
-            f"⚽ **{home} vs {away}**\n\n"
             f"{analysis}\n\n"
-            f"👇 **REGISTER & BET NOW** 👇"
+            f"👇 **BET NOW & GET BONUS** 👇"
         )
         
-        # Affiliate Buttons
         markup = InlineKeyboardMarkup()
-        btn1 = InlineKeyboardButton("💎 1XBET (Bonus)", url=LINK_1XBET)
-        btn2 = InlineKeyboardButton("🟢 LINEBET (High Odds)", url=LINK_LINEBET)
-        btn3 = InlineKeyboardButton("🎰 STAKE (Crypto)", url=LINK_STAKE)
-        markup.add(btn1)
-        markup.add(btn2)
+        btn1 = InlineKeyboardButton("💎 1XBET", url=LINK_1XBET)
+        btn2 = InlineKeyboardButton("🟢 LINEBET", url=LINK_LINEBET)
+        btn3 = InlineKeyboardButton("🎰 STAKE", url=LINK_STAKE)
+        markup.add(btn1, btn2)
         markup.add(btn3)
         
-        # Send text message (Image takes too much data/logic for this basic API)
         bot.send_message(TELEGRAM_CHANNEL_ID, msg, parse_mode="Markdown", reply_markup=markup)
-        print("-> Telegram Post Success!")
+        print("✅ Telegram Post Success!")
         
     except Exception as e:
-        print(f"Telegram Error: {e}")
+        print(f"❌ Telegram Error: {e}")
 
 def post_to_facebook(home, away):
+    if not FB_TOKEN: return
+
     try:
         graph = facebook.GraphAPI(FB_TOKEN)
         
-        # Teaser Message
         msg = (
-            f"✅ PREDICTION READY: {home} vs {away}\n\n"
-            f"We have just posted a 100% Winning Tip for this match!\n"
-            f"Odds: 1.80+ 💰\n\n"
-            f"👇 GET THE TIP HERE FREE 👇\n"
-            f"{TELEGRAM_INVITE}\n"
+            f"🔥 {home} vs {away} PREDICTION READY! 🔥\n\n"
+            f"We just dropped a MAX STAKE (10/10) Fix for this match. 💎\n"
+            f"The Analysis & Odds are posted in our VIP Channel.\n\n"
+            f"👇 GET THE WINNING TIP HERE 👇\n"
             f"{TELEGRAM_INVITE}\n\n"
-            f"#Betting #Football #GlobalScoreUpdates"
+            f"#BettingTips #Football #{home} #{away}"
         )
         
-        # Post text only (Link preview will show Telegram)
+        # Post Link Preview
         graph.put_object("me", "feed", message=msg, link=TELEGRAM_INVITE)
-        print("-> Facebook Post Success!")
+        print("✅ Facebook Post Success!")
         
     except Exception as e:
-        print(f"FB Error: {e}")
+        print(f"❌ FB Error: {e}")
 
 def main():
     print("--- Starting Affiliate Bot ---")
     
     matches = get_matches()
-    
     if not matches:
-        print("No matches found (or API limit reached).")
+        print("❌ No matches found or API Limit Reached.")
         return
 
     match = select_best_match(matches)
     if not match:
-        print("No suitable matches found.")
+        print("❌ No valid matches in list.")
         return
 
-    # Extract Data (Adjust based on exact API response structure)
-    # Most APIs use 'homeTeam' and 'awayTeam' keys
+    # Safe Data Extraction
     try:
-        home = match.get('homeTeam', {}).get('name') or match.get('home', {}).get('name') or "Home Team"
-        away = match.get('awayTeam', {}).get('name') or match.get('away', {}).get('name') or "Away Team"
-        league = match.get('league', {}).get('name') or "League"
+        home = match.get('homeTeam', {}).get('name') or match.get('home', {}).get('name') or "Home"
+        away = match.get('awayTeam', {}).get('name') or match.get('away', {}).get('name') or "Away"
+        league = match.get('league', {}).get('name') or "Football"
     except:
-        home = "Home"
-        away = "Away"
-        league = "Football"
+        home, away, league = "Home Team", "Away Team", "League"
 
-    print(f"Target: {home} vs {away}")
+    print(f"🎯 Selected: {home} vs {away}")
 
-    # Generate Content
+    # Generate & Post
     analysis = get_ai_prediction(home, away, league)
-    
-    # Post
     post_to_telegram(home, away, analysis)
     post_to_facebook(home, away)
 
