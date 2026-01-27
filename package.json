@@ -1,9 +1,8 @@
 {
-  "name": "global-score-news-autopost",
-  "version": "2.0.0",
+  "name": "global-score-news",
+  "version": "3.0.0",
   "type": "module",
   "private": true,
-  "description": "Auto-post football updates with images to Facebook",
   "scripts": {
     "start": "node scripts/autopost.mjs"
   },
