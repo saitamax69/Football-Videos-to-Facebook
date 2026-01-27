@@ -189,4 +189,226 @@ function transformToMatchData(raw) {
     round: raw.round || raw.matchday || "",
     home_team: getTeamName(raw.home || raw.homeTeam || raw.home_team),
     away_team: getTeamName(raw.away || raw.awayTeam || raw.away_team),
-    
+    status: normalizeStatus(raw.status || raw.state),
+    minute: raw.minute ?? raw.time ?? raw.currentMinute ?? null,
+    score: getScore(raw),
+    scorers: raw.scorers || raw.goals || [],
+    events: raw.events || raw.incidents || [],
+    stats: raw.stats || raw.statistics || {},
+    form: raw.form || {},
+    h2h: raw.h2h || raw.headToHead || {},
+    odds_like: raw.odds || {},
+    venue: raw.venue || raw.stadium || "",
+    kickoff_iso: raw.kickoff_iso || raw.datetime || raw.startTime || raw.date || "",
+    notes: raw.notes || ""
+  };
+}
+
+function determineContentType(status) {
+  switch (status) {
+    case "LIVE":
+      return "live_update";
+    case "HT":
+      return "half_time";
+    case "FT":
+      return "full_time";
+    case "NS":
+    default:
+      return "preview";
+  }
+}
+
+// ============================================
+// GEMINI API
+// ============================================
+
+async function generatePostWithGemini(contentType, matchData) {
+  console.log("🤖 Generating post with Gemini...");
+  
+  const input = {
+    page_name: "Global Score News",
+    telegram_cta_url: "https://t.me/+xAQ3DCVJa8A2ZmY8",
+    content_type: contentType,
+    language: "en",
+    match_data: matchData
+  };
+  
+  const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${GEMINI_API_KEY}`;
+  
+  const requestBody = {
+    contents: [
+      {
+        role: "user",
+        parts: [{ text: MASTER_INSTRUCTION }]
+      },
+      {
+        role: "user",
+        parts: [{ text: `Generate a ${contentType} post for this match:\n\n${JSON.stringify(input, null, 2)}` }]
+      }
+    ],
+    generationConfig: {
+      temperature: 0.7,
+      maxOutputTokens: 1024
+    }
+  };
+  
+  const res = await fetch(url, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify(requestBody)
+  });
+  
+  if (!res.ok) {
+    const errText = await res.text();
+    throw new Error(`Gemini API error ${res.status}: ${errText}`);
+  }
+  
+  const data = await res.json();
+  const text = data?.candidates?.[0]?.content?.parts?.[0]?.text || "";
+  
+  // Clean up and parse JSON response
+  let cleaned = text.trim();
+  
+  // Remove markdown code fences if present
+  if (cleaned.startsWith("```json")) {
+    cleaned = cleaned.slice(7);
+  } else if (cleaned.startsWith("```")) {
+    cleaned = cleaned.slice(3);
+  }
+  if (cleaned.endsWith("```")) {
+    cleaned = cleaned.slice(0, -3);
+  }
+  cleaned = cleaned.trim();
+  
+  try {
+    return JSON.parse(cleaned);
+  } catch (parseError) {
+    console.error("Failed to parse Gemini response as JSON:", cleaned);
+    throw new Error("Invalid JSON response from Gemini");
+  }
+}
+
+// ============================================
+// FACEBOOK API
+// ============================================
+
+async function postToFacebook(message) {
+  console.log("📘 Posting to Facebook...");
+  
+  const url = `https://graph.facebook.com/v19.0/${FB_PAGE_ID}/feed`;
+  
+  const params = new URLSearchParams({
+    message: message,
+    access_token: FB_PAGE_ACCESS_TOKEN
+  });
+  
+  const res = await fetch(url, {
+    method: "POST",
+    body: params
+  });
+  
+  if (!res.ok) {
+    const errText = await res.text();
+    throw new Error(`Facebook API error ${res.status}: ${errText}`);
+  }
+  
+  return res.json();
+}
+
+function buildFacebookMessage(geminiResponse) {
+  const postText = geminiResponse.post_text || "";
+  const hashtags = geminiResponse.hashtags || [];
+  
+  // Check if hashtags are already in post_text
+  const hashtagsText = hashtags.join(" ");
+  
+  if (postText.includes("#GlobalScoreNews")) {
+    return postText;
+  }
+  
+  return `${postText}\n\n${hashtagsText}`.trim();
+}
+
+// ============================================
+// DUPLICATE POST PREVENTION (Simple)
+// ============================================
+
+let lastPostedMatch = null;
+
+function createMatchKey(matchData) {
+  return `${matchData.home_team}_${matchData.away_team}_${matchData.status}_${matchData.score.home}_${matchData.score.away}`;
+}
+
+function isDuplicate(matchData) {
+  const key = createMatchKey(matchData);
+  if (lastPostedMatch === key) {
+    return true;
+  }
+  lastPostedMatch = key;
+  return false;
+}
+
+// ============================================
+// MAIN FUNCTION
+// ============================================
+
+async function main() {
+  console.log("🚀 Starting Global Score News Autopost...\n");
+  
+  // Validate environment
+  assertEnv();
+  
+  // Fetch matches
+  const matches = await fetchAllMatches();
+  
+  if (!matches || matches.length === 0) {
+    console.log("⚠️ No matches found. Exiting.");
+    return;
+  }
+  
+  // Pick best match to post about
+  const rawMatch = pickBestMatch(matches);
+  
+  if (!rawMatch) {
+    console.log("⚠️ No suitable match found. Exiting.");
+    return;
+  }
+  
+  // Transform to our format
+  const matchData = transformToMatchData(rawMatch);
+  console.log(`\n📋 Match: ${matchData.home_team} vs ${matchData.away_team}`);
+  console.log(`   Status: ${matchData.status}`);
+  console.log(`   Score: ${matchData.score.home} - ${matchData.score.away}`);
+  console.log(`   Competition: ${matchData.competition}\n`);
+  
+  // Check for duplicate
+  if (isDuplicate(matchData)) {
+    console.log("⚠️ Duplicate match detected. Skipping.");
+    return;
+  }
+  
+  // Determine content type
+  const contentType = determineContentType(matchData.status);
+  console.log(`📝 Content type: ${contentType}\n`);
+  
+  // Generate post with Gemini
+  const geminiResponse = await generatePostWithGemini(contentType, matchData);
+  console.log("✅ Post generated successfully\n");
+  
+  // Build final message
+  const message = buildFacebookMessage(geminiResponse);
+  console.log("--- POST PREVIEW ---");
+  console.log(message);
+  console.log("--- END PREVIEW ---\n");
+  
+  // Post to Facebook
+  const fbResult = await postToFacebook(message);
+  console.log("✅ Posted to Facebook successfully!");
+  console.log(`   Post ID: ${fbResult.id}`);
+}
+
+// Run
+main().catch((error) => {
+  console.error("❌ Error:", error.message);
+  process.exit(1);
+});
