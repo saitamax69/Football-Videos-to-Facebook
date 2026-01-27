@@ -30,63 +30,87 @@ const CONFIG = {
   ]
 };
 
-const LEAGUE_EMOJI = {
-  "PREMIER": "ENG",
-  "CHAMPIONSHIP": "ENG",
-  "FA CUP": "ENG",
-  "ENGLAND": "ENG",
-  "LA LIGA": "ESP",
-  "LALIGA": "ESP",
-  "SPAIN": "ESP",
-  "BUNDESLIGA": "GER",
-  "GERMANY": "GER",
-  "SERIE A": "ITA",
-  "ITALY": "ITA",
-  "LIGUE 1": "FRA",
-  "FRANCE": "FRA",
-  "CHAMPIONS": "UEFA",
-  "EUROPA": "UEFA",
-  "EREDIVISIE": "NED",
-  "MLS": "USA",
-  "LIGA MX": "MEX",
-  "BRAZIL": "BRA",
-  "SAUDI": "KSA",
-  "ARGENTINA": "ARG"
+const LEAGUE_FLAGS = {
+  "ENGLAND": "\uD83C\uDFF4\uDB40\uDC67\uDB40\uDC62\uDB40\uDC65\uDB40\uDC6E\uDB40\uDC67\uDB40\uDC7F",
+  "PREMIER": "\uD83C\uDFF4\uDB40\uDC67\uDB40\uDC62\uDB40\uDC65\uDB40\uDC6E\uDB40\uDC67\uDB40\uDC7F",
+  "CHAMPIONSHIP": "\uD83C\uDFF4\uDB40\uDC67\uDB40\uDC62\uDB40\uDC65\uDB40\uDC6E\uDB40\uDC67\uDB40\uDC7F",
+  "FA CUP": "\uD83C\uDFF4\uDB40\uDC67\uDB40\uDC62\uDB40\uDC65\uDB40\uDC6E\uDB40\uDC67\uDB40\uDC7F",
+  "CARABAO": "\uD83C\uDFF4\uDB40\uDC67\uDB40\uDC62\uDB40\uDC65\uDB40\uDC6E\uDB40\uDC67\uDB40\uDC7F",
+  "SPAIN": "\uD83C\uDDEA\uD83C\uDDF8",
+  "LA LIGA": "\uD83C\uDDEA\uD83C\uDDF8",
+  "LALIGA": "\uD83C\uDDEA\uD83C\uDDF8",
+  "COPA DEL REY": "\uD83C\uDDEA\uD83C\uDDF8",
+  "GERMANY": "\uD83C\uDDE9\uD83C\uDDEA",
+  "BUNDESLIGA": "\uD83C\uDDE9\uD83C\uDDEA",
+  "DFB": "\uD83C\uDDE9\uD83C\uDDEA",
+  "ITALY": "\uD83C\uDDEE\uD83C\uDDF9",
+  "SERIE A": "\uD83C\uDDEE\uD83C\uDDF9",
+  "COPPA": "\uD83C\uDDEE\uD83C\uDDF9",
+  "FRANCE": "\uD83C\uDDEB\uD83C\uDDF7",
+  "LIGUE 1": "\uD83C\uDDEB\uD83C\uDDF7",
+  "CHAMPIONS": "\uD83C\uDDEA\uD83C\uDDFA",
+  "EUROPA": "\uD83C\uDDEA\uD83C\uDDFA",
+  "UEFA": "\uD83C\uDDEA\uD83C\uDDFA",
+  "NETHERLANDS": "\uD83C\uDDF3\uD83C\uDDF1",
+  "EREDIVISIE": "\uD83C\uDDF3\uD83C\uDDF1",
+  "PORTUGAL": "\uD83C\uDDF5\uD83C\uDDF9",
+  "USA": "\uD83C\uDDFA\uD83C\uDDF8",
+  "MLS": "\uD83C\uDDFA\uD83C\uDDF8",
+  "MEXICO": "\uD83C\uDDF2\uD83C\uDDFD",
+  "LIGA MX": "\uD83C\uDDF2\uD83C\uDDFD",
+  "BRAZIL": "\uD83C\uDDE7\uD83C\uDDF7",
+  "ARGENTINA": "\uD83C\uDDE6\uD83C\uDDF7",
+  "SAUDI": "\uD83C\uDDF8\uD83C\uDDE6",
+  "SCOTLAND": "\uD83C\uDFF4\uDB40\uDC67\uDB40\uDC62\uDB40\uDC73\uDB40\uDC63\uDB40\uDC74\uDB40\uDC7F",
+  "TURKEY": "\uD83C\uDDF9\uD83C\uDDF7",
+  "BELGIUM": "\uD83C\uDDE7\uD83C\uDDEA",
+  "WORLD": "\uD83C\uDF0D",
+  "AFRICA": "\uD83C\uDF0D",
+  "EGYPT": "\uD83C\uDDEA\uD83C\uDDEC"
 };
 
+function getFlag(leagueName) {
+  if (!leagueName) return "\u26BD";
+  var upper = leagueName.toUpperCase();
+  for (var key in LEAGUE_FLAGS) {
+    if (upper.indexOf(key) !== -1) {
+      return LEAGUE_FLAGS[key];
+    }
+  }
+  return "\u26BD";
+}
+
 function assertEnv() {
-  const required = ["SPORTDB_API_KEY", "GROQ_API_KEY", "FB_PAGE_ID", "FB_PAGE_ACCESS_TOKEN"];
-  for (const key of required) {
-    if (!process.env[key]) throw new Error("Missing: " + key);
+  var required = ["SPORTDB_API_KEY", "GROQ_API_KEY", "FB_PAGE_ID", "FB_PAGE_ACCESS_TOKEN"];
+  for (var i = 0; i < required.length; i++) {
+    if (!process.env[required[i]]) throw new Error("Missing: " + required[i]);
   }
   console.log("Environment OK");
 }
 
 function delay(ms) {
-  return new Promise(resolve => setTimeout(resolve, ms));
+  return new Promise(function(resolve) {
+    setTimeout(resolve, ms);
+  });
 }
 
 function getTodayFormatted() {
-  const days = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
-  const months = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
-  const now = new Date();
-  return days[now.getDay()] + " " + now.getDate() + " " + months[now.getMonth()] + " " + now.getFullYear();
-}
-
-function getLeagueCode(leagueName) {
-  if (!leagueName) return "";
-  const upper = leagueName.toUpperCase();
-  for (const [key, code] of Object.entries(LEAGUE_EMOJI)) {
-    if (upper.includes(key)) return code;
-  }
-  return "";
+  var days = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
+  var months = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
+  var now = new Date();
+  var day = now.getDate();
+  var suffix = 'th';
+  if (day === 1 || day === 21 || day === 31) suffix = 'st';
+  else if (day === 2 || day === 22) suffix = 'nd';
+  else if (day === 3 || day === 23) suffix = 'rd';
+  return days[now.getDay()] + " " + day + suffix + " " + months[now.getMonth()] + " " + now.getFullYear();
 }
 
 function formatOdds(odds) {
   if (!odds) return null;
-  const home = odds.home || odds["1"] || null;
-  const draw = odds.draw || odds["X"] || null;
-  const away = odds.away || odds["2"] || null;
+  var home = odds.home || odds["1"] || null;
+  var draw = odds.draw || odds["X"] || null;
+  var away = odds.away || odds["2"] || null;
   if (!home && !draw && !away) return null;
   return {
     home: home ? parseFloat(home).toFixed(2) : "-",
@@ -97,23 +121,24 @@ function formatOdds(odds) {
 
 function isTopLeague(leagueName) {
   if (!leagueName) return false;
-  const upper = leagueName.toUpperCase();
-  const exclude = ["U17", "U18", "U19", "U20", "U21", "U23", "YOUTH", "RESERVE", "WOMEN U"];
-  for (const p of exclude) {
-    if (upper.includes(p)) return false;
+  var upper = leagueName.toUpperCase();
+  var exclude = ["U17", "U18", "U19", "U20", "U21", "U23", "YOUTH", "RESERVE", "WOMEN U"];
+  for (var i = 0; i < exclude.length; i++) {
+    if (upper.indexOf(exclude[i]) !== -1) return false;
   }
-  return CONFIG.TOP_LEAGUES.some(function(league) {
-    return upper.includes(league);
-  });
+  for (var i = 0; i < CONFIG.TOP_LEAGUES.length; i++) {
+    if (upper.indexOf(CONFIG.TOP_LEAGUES[i]) !== -1) return true;
+  }
+  return false;
 }
 
 function getLeaguePriority(leagueName) {
   if (!leagueName) return 999;
-  const upper = leagueName.toUpperCase();
-  const index = CONFIG.TOP_LEAGUES.findIndex(function(league) {
-    return upper.includes(league);
-  });
-  return index === -1 ? 999 : index;
+  var upper = leagueName.toUpperCase();
+  for (var i = 0; i < CONFIG.TOP_LEAGUES.length; i++) {
+    if (upper.indexOf(CONFIG.TOP_LEAGUES[i]) !== -1) return i;
+  }
+  return 999;
 }
 
 function ensureDataDir() {
@@ -150,7 +175,7 @@ function getHoursSinceLastPost(history) {
 }
 
 function recordPost(history, count) {
-  const today = getTodayDate();
+  var today = getTodayDate();
   history.posts.push({ postedAt: new Date().toISOString(), count: count });
   history.dailyCount[today] = (history.dailyCount[today] || 0) + 1;
   history.lastPost = new Date().toISOString();
@@ -158,10 +183,10 @@ function recordPost(history, count) {
 }
 
 function shouldPostNow(history) {
-  const hour = new Date().getUTCHours();
-  const count = getTodayCount(history);
-  const hours = getHoursSinceLastPost(history);
-  const target = CONFIG.MIN_POSTS_PER_DAY + (parseInt(getTodayDate().replace(/-/g, '')) % 5);
+  var hour = new Date().getUTCHours();
+  var count = getTodayCount(history);
+  var hours = getHoursSinceLastPost(history);
+  var target = CONFIG.MIN_POSTS_PER_DAY + (parseInt(getTodayDate().replace(/-/g, '')) % 5);
   
   console.log("Posts: " + count + "/" + target + " | Hours since last: " + hours.toFixed(1));
   
@@ -169,8 +194,8 @@ function shouldPostNow(history) {
   if (hours < CONFIG.MIN_HOURS_BETWEEN_POSTS) return false;
   
   var chance = CONFIG.BASE_POST_CHANCE;
-  if (CONFIG.QUIET_HOURS.includes(hour)) chance = chance * 0.2;
-  else if (CONFIG.PEAK_HOURS.includes(hour)) chance = chance * 1.5;
+  if (CONFIG.QUIET_HOURS.indexOf(hour) !== -1) chance = chance * 0.2;
+  else if (CONFIG.PEAK_HOURS.indexOf(hour) !== -1) chance = chance * 1.5;
   
   return Math.random() < chance;
 }
@@ -180,12 +205,12 @@ async function fetchAllMatches() {
   var all = [];
   
   try {
-    const res = await fetch("https://api.sportdb.dev/api/flashscore/football/live", {
+    var res = await fetch("https://api.sportdb.dev/api/flashscore/football/live", {
       headers: { "X-API-Key": SPORTDB_API_KEY }
     });
     if (res.ok) {
-      const data = await res.json();
-      const m = Array.isArray(data) ? data : (data.matches || data.data || []);
+      var data = await res.json();
+      var m = Array.isArray(data) ? data : (data.matches || data.data || []);
       console.log("Live: " + m.length);
       all = all.concat(m);
     }
@@ -194,16 +219,16 @@ async function fetchAllMatches() {
   }
   
   try {
-    const res = await fetch("https://api.sportdb.dev/api/flashscore/football/today", {
+    var res = await fetch("https://api.sportdb.dev/api/flashscore/football/today", {
       headers: { "X-API-Key": SPORTDB_API_KEY }
     });
     if (res.ok) {
-      const data = await res.json();
-      const m = Array.isArray(data) ? data : (data.matches || data.data || []);
+      var data = await res.json();
+      var m = Array.isArray(data) ? data : (data.matches || data.data || []);
       console.log("Today: " + m.length);
       for (var i = 0; i < m.length; i++) {
-        const match = m[i];
-        const key = (match.homeName || "") + "_" + (match.awayName || "");
+        var match = m[i];
+        var key = (match.homeName || "") + "_" + (match.awayName || "");
         var exists = false;
         for (var j = 0; j < all.length; j++) {
           if ((all[j].homeName || "") + "_" + (all[j].awayName || "") === key) {
@@ -223,20 +248,20 @@ async function fetchAllMatches() {
 }
 
 function getStatus(m) {
-  const s = (m.eventStage || m.status || "").toUpperCase();
-  if (s.includes("1ST") || s.includes("2ND") || s === "LIVE" || s === "1H" || s === "2H") return "LIVE";
-  if (s.includes("HT")) return "HT";
+  var s = (m.eventStage || m.status || "").toUpperCase();
+  if (s.indexOf("1ST") !== -1 || s.indexOf("2ND") !== -1 || s === "LIVE" || s === "1H" || s === "2H") return "LIVE";
+  if (s.indexOf("HT") !== -1) return "HT";
   if (s === "FINISHED" || s === "FT" || s === "AET" || s === "PEN") return "FT";
   return "NS";
 }
 
 function transform(raw) {
-  const league = raw.leagueName || raw.tournamentName || "";
+  var league = raw.leagueName || raw.tournamentName || "";
   return {
     home: raw.homeName || raw.homeFirstName || "Unknown",
     away: raw.awayName || raw.awayFirstName || "Unknown",
     league: league,
-    code: getLeagueCode(league),
+    flag: getFlag(league),
     status: getStatus(raw),
     minute: raw.gameTime !== "-1" ? raw.gameTime : null,
     score: { 
@@ -259,7 +284,7 @@ function mockOdds() {
 }
 
 function mockStats() {
-  const f = ['W', 'D', 'L'];
+  var f = ['W', 'D', 'L'];
   var homeForm = "";
   var awayForm = "";
   for (var i = 0; i < 5; i++) {
@@ -317,7 +342,7 @@ function groupByLeague(matches) {
     var m = matches[i];
     var key = m.league || "Other";
     if (!groups[key]) {
-      groups[key] = { name: m.league, code: m.code, matches: [] };
+      groups[key] = { name: m.league, flag: m.flag, matches: [] };
     }
     groups[key].matches.push(m);
   }
@@ -332,8 +357,14 @@ function filterTop(matches) {
   return result;
 }
 
+function getRiskStars(risk) {
+  if (risk === "Low") return "\u2B50";
+  if (risk === "Medium") return "\u2B50\u2B50";
+  return "\u2B50\u2B50\u2B50";
+}
+
 function generatePrediction(match) {
-  const homeOdds = parseFloat(match.odds.home);
+  var homeOdds = parseFloat(match.odds.home);
   var homeWins = 0;
   for (var i = 0; i < match.stats.homeForm.length; i++) {
     if (match.stats.homeForm[i] === 'W') homeWins++;
@@ -342,7 +373,7 @@ function generatePrediction(match) {
   var pick, odds, risk, analysis;
   
   if (homeOdds < 1.6 && homeWins >= 3) {
-    pick = match.home + " Win + Over 1.5 Goals";
+    pick = match.home + " Win & Over 1.5 Goals";
     odds = (homeOdds * 1.15).toFixed(2);
     risk = "Medium";
     analysis = match.home + " in great form with " + homeWins + " wins in 5. Strong favorites at home.";
@@ -367,31 +398,31 @@ function generatePrediction(match) {
 }
 
 function buildPost(cats) {
-  const date = getTodayFormatted();
-  const total = cats.live.length + cats.finished.length + cats.upcoming.length;
+  var date = getTodayFormatted();
+  var total = cats.live.length + cats.finished.length + cats.upcoming.length;
   
   var post = "";
   
   // HEADER
-  post += "FOOTBALL DAILY | " + date + "\n";
-  post += "==============================\n";
-  post += total + " Matches Today | Top Picks Inside!\n";
-  post += "==============================\n\n";
+  post += "\u26BD FOOTBALL DAILY | " + date + "\n";
+  post += "\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\n";
+  post += "\uD83D\uDCCA " + total + " Matches Today | Top Picks Inside! \uD83C\uDFAF\n";
+  post += "\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\n\n";
   
   // LIVE SCORES
   var topLive = filterTop(cats.live).slice(0, 8);
   if (topLive.length > 0) {
-    post += "LIVE SCORES\n";
-    post += "------------------------------\n\n";
+    post += "\uD83D\uDD34 LIVE SCORES\n";
+    post += "\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\n\n";
     
     var grouped = groupByLeague(topLive);
     for (var i = 0; i < grouped.length; i++) {
       var g = grouped[i];
-      post += "[" + g.code + "] " + g.name + "\n";
+      post += g.flag + " " + g.name + "\n";
       for (var j = 0; j < g.matches.length; j++) {
         var m = g.matches[j];
-        post += "  " + m.home + " " + m.score.home + "-" + m.score.away + " " + m.away;
-        if (m.minute) post += " (" + m.minute + "')";
+        post += "   \u2022 " + m.home + " " + m.score.home + "-" + m.score.away + " " + m.away;
+        if (m.minute) post += " \u23F1\uFE0F " + m.minute + "'";
         post += "\n";
       }
       post += "\n";
@@ -401,17 +432,19 @@ function buildPost(cats) {
   // RESULTS
   var topFinished = filterTop(cats.finished).slice(0, 10);
   if (topFinished.length > 0) {
-    post += "TODAY'S RESULTS\n";
-    post += "------------------------------\n\n";
+    post += "\u2705 TODAY'S RESULTS\n";
+    post += "\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\n\n";
     
     var grouped = groupByLeague(topFinished);
     for (var i = 0; i < grouped.length; i++) {
       var g = grouped[i];
-      post += "[" + g.code + "] " + g.name + "\n";
+      post += g.flag + " " + g.name + "\n";
       for (var j = 0; j < g.matches.length; j++) {
         var m = g.matches[j];
-        var result = m.score.home > m.score.away ? "HOME WIN" : (m.score.home < m.score.away ? "AWAY WIN" : "DRAW");
-        post += "  " + m.home + " " + m.score.home + "-" + m.score.away + " " + m.away + " - " + result + "\n";
+        var emoji = "\uD83E\uDD1D";
+        if (m.score.home > m.score.away) emoji = "\u2705";
+        else if (m.score.home < m.score.away) emoji = "\u274C";
+        post += "   \u2022 " + m.home + " " + m.score.home + "-" + m.score.away + " " + m.away + " " + emoji + "\n";
       }
       post += "\n";
     }
@@ -420,39 +453,38 @@ function buildPost(cats) {
   // PREDICTIONS
   var topUpcoming = filterTop(cats.upcoming).slice(0, 6);
   if (topUpcoming.length > 0) {
-    post += "TOP PREDICTIONS\n";
-    post += "==============================\n\n";
+    post += "\uD83C\uDFAF TOP PREDICTIONS\n";
+    post += "\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\n\n";
     
     for (var i = 0; i < topUpcoming.length; i++) {
       var m = topUpcoming[i];
       var pred = generatePrediction(m);
       
-      post += "[" + m.code + "] " + m.league + "\n";
-      post += "------------------------------\n\n";
+      post += m.flag + " " + m.league + "\n";
+      post += "\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\n\n";
       
-      post += "Match: " + m.home + " vs " + m.away + "\n";
-      post += "Odds: " + m.odds.home + " | " + m.odds.draw + " | " + m.odds.away + "\n\n";
+      post += "\u26BD " + m.home + " vs " + m.away + "\n\n";
       
-      post += "Stats:\n";
-      post += "  - " + m.home + " form: " + m.stats.homeForm + "\n";
-      post += "  - " + m.away + " form: " + m.stats.awayForm + "\n";
-      post += "  - H2H: " + m.stats.h2h + " wins in last 5\n";
-      post += "  - Avg goals: " + m.stats.avgGoals + "\n\n";
+      post += "   \uD83D\uDCCA Odds: " + m.odds.home + " | " + m.odds.draw + " | " + m.odds.away + "\n\n";
       
-      post += "PICK: " + pred.pick + "\n";
-      post += "ODDS: @" + pred.odds + "\n";
-      post += "RISK: " + pred.risk + "\n\n";
+      post += "   \uD83D\uDCC8 Stats:\n";
+      post += "   \u251C " + m.home + " form: " + m.stats.homeForm + "\n";
+      post += "   \u251C " + m.away + " form: " + m.stats.awayForm + "\n";
+      post += "   \u251C H2H: " + m.stats.h2h + " wins in last 5\n";
+      post += "   \u2514 Avg goals: " + m.stats.avgGoals + "\n\n";
       
-      post += "Analysis: " + pred.analysis + "\n\n";
+      post += "   \uD83D\uDD2E Pick: " + pred.pick + "\n";
+      post += "   \uD83D\uDCB0 Odds: @" + pred.odds + "\n";
+      post += "   \u26A0\uFE0F Risk: " + getRiskStars(pred.risk) + " " + pred.risk + "\n\n";
       
-      post += "------------------------------\n\n";
+      post += "   \uD83D\uDCA1 " + pred.analysis + "\n\n";
     }
   }
   
   // ACCUMULATOR
   if (topUpcoming.length >= 4) {
-    post += "ACCUMULATOR OF THE DAY\n";
-    post += "==============================\n\n";
+    post += "\uD83D\uDD25 ACCUMULATOR OF THE DAY\n";
+    post += "\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\n\n";
     
     var accaMatches = topUpcoming.slice(0, 5);
     var totalOdds = 1;
@@ -462,39 +494,40 @@ function buildPost(cats) {
       var pred = generatePrediction(m);
       var odds = parseFloat(pred.odds);
       totalOdds = totalOdds * odds;
-      post += (i + 1) + ". " + m.home + " vs " + m.away + "\n";
-      post += "   -> " + pred.pick + " @" + pred.odds + "\n\n";
+      var num = ["1\uFE0F\u20E3", "2\uFE0F\u20E3", "3\uFE0F\u20E3", "4\uFE0F\u20E3", "5\uFE0F\u20E3"][i];
+      post += "   " + num + " " + m.home + " vs " + m.away + "\n";
+      post += "      \u2192 " + pred.pick + " @" + pred.odds + "\n\n";
     }
     
-    post += "10 GBP returns " + (10 * totalOdds).toFixed(2) + " GBP\n\n";
+    post += "   \uD83D\uDCB0 \u00A310 returns \u00A3" + (10 * totalOdds).toFixed(2) + "\n\n";
   }
   
   // VALUE BETS
-  post += "VALUE BETS\n";
-  post += "------------------------------\n\n";
+  post += "\uD83D\uDCC8 VALUE BETS\n";
+  post += "\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\n\n";
   
   if (topUpcoming.length >= 3) {
     var m1 = topUpcoming[0];
     var m2 = topUpcoming[1];
     var m3 = topUpcoming[2];
     
-    post += "SAFE: " + m1.home + " to Win @" + m1.odds.home + "\n\n";
-    post += "VALUE: " + m2.home + " vs " + m2.away + " - BTTS @1.75\n\n";
-    post += "LONGSHOT: " + m3.away + " to Win @" + m3.odds.away + "\n\n";
+    post += "   \uD83D\uDFE2 SAFE: " + m1.home + " Win @" + m1.odds.home + "\n\n";
+    post += "   \uD83D\uDFE1 VALUE: " + m2.home + " vs " + m2.away + " BTTS @1.75\n\n";
+    post += "   \uD83D\uDD34 LONGSHOT: " + m3.away + " Win @" + m3.odds.away + "\n\n";
   }
   
   // CTA
   post += "\n";
-  post += "WANT MORE WINNERS?\n";
-  post += "==============================\n\n";
-  post += "Join 5000+ members getting FREE tips!\n\n";
-  post += "- Pre-match predictions\n";
-  post += "- Live in-play alerts\n";
-  post += "- Daily accumulators\n";
-  post += "- VIP exclusive picks\n\n";
-  post += "JOIN FREE: " + CONFIG.TELEGRAM_URL + "\n\n";
-  post += "18+ Gamble Responsibly\n\n";
-  post += "==============================\n\n";
+  post += "\uD83D\uDCB0 WANT MORE WINNERS?\n";
+  post += "\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\n\n";
+  post += "Join 5,000+ members getting FREE tips!\n\n";
+  post += "   \u2705 Pre-match predictions\n";
+  post += "   \u2705 Live in-play alerts\n";
+  post += "   \u2705 Daily accumulators\n";
+  post += "   \u2705 VIP exclusive picks\n\n";
+  post += "\uD83D\uDC49 JOIN FREE: " + CONFIG.TELEGRAM_URL + "\n\n";
+  post += "\u26A0\uFE0F 18+ | Gamble Responsibly\n\n";
+  post += "\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\n\n";
   
   // HASHTAGS
   post += "#GlobalScoreNews #Football #BettingTips #FreeTips #Predictions #PremierLeague #LaLiga #Bundesliga #SerieA #Ligue1 #ChampionsLeague";
@@ -505,7 +538,7 @@ function buildPost(cats) {
 async function postToFacebook(message) {
   console.log("Posting to Facebook...");
   
-  const res = await fetch("https://graph.facebook.com/v19.0/" + FB_PAGE_ID + "/feed", {
+  var res = await fetch("https://graph.facebook.com/v19.0/" + FB_PAGE_ID + "/feed", {
     method: "POST",
     body: new URLSearchParams({
       message: message,
@@ -514,7 +547,7 @@ async function postToFacebook(message) {
   });
   
   if (!res.ok) {
-    const err = await res.text();
+    var err = await res.text();
     throw new Error("Facebook error: " + res.status);
   }
   
@@ -524,12 +557,12 @@ async function postToFacebook(message) {
 
 async function main() {
   console.log("==================================================");
-  console.log("GLOBAL SCORE NEWS v8.1 - Clean ASCII Version");
+  console.log("GLOBAL SCORE NEWS v8.2 - Emoji Edition");
   console.log("==================================================");
   
   assertEnv();
   
-  const history = loadHistory();
+  var history = loadHistory();
   
   if (!FORCE_POST && !shouldPostNow(history)) {
     console.log("Skipping this run");
@@ -538,13 +571,13 @@ async function main() {
   
   if (FORCE_POST) console.log("FORCE POST MODE");
   
-  const raw = await fetchAllMatches();
+  var raw = await fetchAllMatches();
   if (!raw || raw.length === 0) {
     console.log("No matches found");
     return;
   }
   
-  const cats = processMatches(raw);
+  var cats = processMatches(raw);
   
   var topCount = 0;
   for (var i = 0; i < cats.live.length; i++) {
@@ -564,7 +597,7 @@ async function main() {
     return;
   }
   
-  const post = buildPost(cats);
+  var post = buildPost(cats);
   
   console.log("==================================================");
   console.log("POST PREVIEW:");
@@ -573,7 +606,7 @@ async function main() {
   console.log("==================================================");
   console.log("Length: " + post.length + " characters");
   
-  const result = await postToFacebook(post);
+  var result = await postToFacebook(post);
   recordPost(history, topCount);
   
   console.log("SUCCESS! Post ID: " + result.id);
