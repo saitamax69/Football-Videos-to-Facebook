@@ -1,12 +1,11 @@
 {
   "name": "global-score-news-autopost",
-  "version": "1.0.0",
+  "version": "2.0.0",
   "type": "module",
   "private": true,
-  "description": "Auto-post football updates to Facebook with random timing",
+  "description": "Auto-post football updates with images to Facebook",
   "scripts": {
-    "start": "node scripts/autopost.mjs",
-    "schedule": "node scripts/scheduler.mjs"
+    "start": "node scripts/autopost.mjs"
   },
   "engines": {
     "node": ">=18.0.0"
