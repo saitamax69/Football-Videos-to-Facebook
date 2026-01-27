@@ -30,7 +30,7 @@ const CONFIG = {
   QUIET_HOURS: [0, 1, 2, 3, 4, 5, 6, 7],
   BASE_POST_CHANCE: 0.25,
   PAGE_NAME: "Global Score News",
-  TELEGRAM_URL: "https://t.me/+xAQ3DCVJa8A2ZmY8"
+  TELEGRAM_URL: "https://t.me/+9uDCOJXm_R1hMzM0"
 };
 
 // ============================================
@@ -44,7 +44,7 @@ Rules:
 - Include team names, score, competition
 - If odds provided, mention briefly
 - Use 3-6 emojis (professional, not childish)
-- End with: "Free tips + alerts: Join Telegram 👉 https://t.me/+xAQ3DCVJa8A2ZmY8"
+- End with: "Free tips + alerts: Join Telegram 👉 https://t.me/+9uDCOJXm_R1hMzM0"
 - Add 5-10 hashtags including #GlobalScoreNews
 - For predictions: add "No guarantees. Bet responsibly (18+)."
 - Tone: confident, neutral, energetic
@@ -259,131 +259,11 @@ function transformMatch(raw) {
 }
 
 // ============================================
-// IMAGE GENERATION (Using quickchart.io - FREE)
-// ============================================
-
-function generateMatchImage(match) {
-  console.log("\n🖼️ Generating image...");
-  
-  const { home_team, away_team, score, status, competition, minute, odds, homeLogo, awayLogo } = match;
-  
-  // Status display
-  const statusConfig = {
-    "LIVE": { emoji: "🔴", text: "LIVE", color: "#e74c3c" },
-    "HT": { emoji: "⏸️", text: "HALF TIME", color: "#f39c12" },
-    "FT": { emoji: "✅", text: "FULL TIME", color: "#27ae60" },
-    "NS": { emoji: "📅", text: "UPCOMING", color: "#3498db" }
-  };
-  
-  const statusInfo = statusConfig[status] || statusConfig["NS"];
-  const scoreText = status === "NS" ? "VS" : `${score.home} - ${score.away}`;
-  const minuteText = minute && status === "LIVE" ? `${minute}'` : "";
-  
-  // Build odds text
-  let oddsText = "";
-  if (odds && (odds.home || odds["1"])) {
-    const h = odds.home || odds["1"] || "-";
-    const d = odds.draw || odds["X"] || "-";
-    const a = odds.away || odds["2"] || "-";
-    oddsText = `Odds: ${h} | ${d} | ${a}`;
-  }
-  
-  // Use QuickChart.io to create a professional image
-  // This creates a chart-style image that looks clean
-  const chartConfig = {
-    type: 'bar',
-    data: {
-      labels: [''],
-      datasets: [{
-        data: [0]
-      }]
-    },
-    options: {
-      plugins: {
-        title: {
-          display: true,
-          text: [
-            '⚽ GLOBAL SCORE NEWS',
-            '',
-            `${home_team}`,
-            scoreText,
-            `${away_team}`,
-            '',
-            `${statusInfo.emoji} ${statusInfo.text} ${minuteText}`,
-            competition,
-            '',
-            oddsText,
-            '📱 t.me/+xAQ3DCVJa8A2ZmY8'
-          ],
-          font: { size: 20, weight: 'bold' },
-          color: '#ffffff',
-          padding: 20
-        },
-        legend: { display: false }
-      }
-    }
-  };
-  
-  // Encode for URL
-  const chartUrl = `https://quickchart.io/chart?c=${encodeURIComponent(JSON.stringify(chartConfig))}&backgroundColor=%231a1a2e&width=800&height=600`;
-  
-  console.log("   ✅ Image URL ready");
-  return chartUrl;
-}
-
-// Better option: Create text-based image using og-image style
-function generateCleanImage(match) {
-  console.log("\n🖼️ Creating match graphic...");
-  
-  const { home_team, away_team, score, status, competition, minute, odds } = match;
-  
-  const statusText = {
-    "LIVE": "🔴 LIVE",
-    "HT": "⏸️ HALF TIME", 
-    "FT": "✅ FULL TIME",
-    "NS": "📅 UPCOMING"
-  }[status] || "📅 UPCOMING";
-  
-  const scoreText = status === "NS" ? "VS" : `${score.home} - ${score.away}`;
-  const minuteText = minute && status === "LIVE" ? ` • ${minute}'` : "";
-  
-  let oddsLine = "";
-  if (odds) {
-    const h = odds.home || odds["1"];
-    const d = odds.draw || odds["X"];
-    const a = odds.away || odds["2"];
-    if (h && d && a) oddsLine = `%0A%0AOdds: ${h} | ${d} | ${a}`;
-  }
-  
-  // Using a simple image placeholder service
-  // This creates clean, readable text on solid background
-  const text = encodeURIComponent(
-    `⚽ GLOBAL SCORE NEWS\n\n` +
-    `${home_team}\n` +
-    `${scoreText}\n` +
-    `${away_team}\n\n` +
-    `${statusText}${minuteText}\n` +
-    `${competition}` +
-    (oddsLine ? `\n\nOdds: ${odds?.home || '-'} | ${odds?.draw || '-'} | ${odds?.away || '-'}` : '') +
-    `\n\n📱 Join Telegram for Tips`
-  );
-  
-  // Using placehold.co for simple branded image
-  const imageUrl = `https://placehold.co/1200x630/1a1a2e/ffffff?text=${text.replace(/\n/g, '%0A')}`;
-  
-  console.log("   ✅ Clean image ready");
-  return imageUrl;
-}
-
-// BEST OPTION: No image, just great text
-// Facebook posts with good text often perform BETTER than bad images
-
-// ============================================
 // GROQ API
 // ============================================
 
 async function generateText(match) {
-  console.log("\n🤖 Generating post text...");
+  console.log("\n🤖 Generating post...");
   
   const type = { "LIVE": "live_update", "HT": "half_time", "FT": "full_time" }[match.status] || "preview";
   
@@ -430,7 +310,7 @@ Generate a ${type} post. Return JSON only.`;
       const end = text.lastIndexOf("}");
       if (start !== -1 && end !== -1) text = text.slice(start, end + 1);
       
-      console.log("   ✅ Text generated");
+      console.log("   ✅ Generated");
       return JSON.parse(text);
       
     } catch (e) {
@@ -445,32 +325,9 @@ Generate a ${type} post. Return JSON only.`;
 // FACEBOOK API
 // ============================================
 
-async function postToFacebook(message, imageUrl = null) {
+async function postToFacebook(message) {
   console.log("\n📘 Posting to Facebook...");
   
-  // Try with image first
-  if (imageUrl) {
-    try {
-      const res = await fetch(`https://graph.facebook.com/v19.0/${FB_PAGE_ID}/photos`, {
-        method: "POST",
-        body: new URLSearchParams({
-          url: imageUrl,
-          caption: message,
-          access_token: FB_PAGE_ACCESS_TOKEN
-        })
-      });
-      
-      if (res.ok) {
-        console.log("   📷 Posted with image");
-        return res.json();
-      }
-      console.log("   ⚠️ Image failed, posting text only");
-    } catch (e) {
-      console.log("   ⚠️ Image error, posting text only");
-    }
-  }
-  
-  // Fallback: text only
   const res = await fetch(`https://graph.facebook.com/v19.0/${FB_PAGE_ID}/feed`, {
     method: "POST",
     body: new URLSearchParams({
@@ -484,7 +341,7 @@ async function postToFacebook(message, imageUrl = null) {
     throw new Error(`Facebook: ${res.status} - ${err}`);
   }
   
-  console.log("   📝 Posted text");
+  console.log("   ✅ Posted");
   return res.json();
 }
 
@@ -521,18 +378,11 @@ async function main() {
   const response = await generateText(match);
   const message = response.post_text + "\n\n" + (response.hashtags?.join(" ") || "#GlobalScoreNews #Football");
   
-  // Option: Skip image for now (better engagement with good text)
-  // Or use simple image
-  let imageUrl = null;
-  
-  // Uncomment below to enable simple images:
-  // imageUrl = generateCleanImage(match);
-  
   console.log("\n" + "=".repeat(40));
   console.log(message);
   console.log("=".repeat(40));
   
-  const result = await postToFacebook(message, imageUrl);
+  const result = await postToFacebook(message);
   console.log(`\n✅ Posted! ID: ${result.id || result.post_id}`);
   
   recordPost(history, createMatchKey(raw), {
