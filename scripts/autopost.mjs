@@ -32,11 +32,9 @@ const CONFIG = {
   PAGE_NAME: "Global Score News",
   TELEGRAM_URL: "https://t.me/+9uDCOJXm_R1hMzM0",
   
-  // How many predictions to include
   MIN_PREDICTIONS: 5,
-  MAX_PREDICTIONS: 10,
+  MAX_PREDICTIONS: 8,
   
-  // League priorities
   TOP_LEAGUES: [
     "PREMIER LEAGUE", "CHAMPIONS LEAGUE", "LA LIGA", "LALIGA",
     "BUNDESLIGA", "SERIE A", "LIGUE 1", "EUROPA LEAGUE",
@@ -44,11 +42,9 @@ const CONFIG = {
     "COPPA ITALIA", "COUPE DE FRANCE", "CARABAO CUP", "EFL CUP",
     "WORLD CUP", "EURO", "COPA AMERICA", "NATIONS LEAGUE",
     "SAUDI PRO", "MLS", "EREDIVISIE", "PRIMEIRA LIGA",
-    "SUPER LIG", "BRASILEIRAO", "CHAMPIONSHIP", "LIGA MX",
-    "SCOTTISH", "BELGIAN", "AUSTRIAN", "SWISS"
+    "SUPER LIG", "BRASILEIRAO", "CHAMPIONSHIP", "LIGA MX"
   ],
   
-  // Country flags
   LEAGUE_FLAGS: {
     "PREMIER": "🏴󠁧󠁢󠁥󠁮󠁧󠁿", "CHAMPIONSHIP": "🏴󠁧󠁢󠁥󠁮󠁧󠁿", "FA CUP": "🏴󠁧󠁢󠁥󠁮󠁧󠁿",
     "EFL": "🏴󠁧󠁢󠁥󠁮󠁧󠁿", "CARABAO": "🏴󠁧󠁢󠁥󠁮󠁧󠁿", "ENGLAND": "🏴󠁧󠁢󠁥󠁮󠁧󠁿",
@@ -56,163 +52,194 @@ const CONFIG = {
     "BUNDESLIGA": "🇩🇪", "DFB": "🇩🇪", "GERMANY": "🇩🇪",
     "SERIE A": "🇮🇹", "COPPA ITALIA": "🇮🇹", "ITALY": "🇮🇹",
     "LIGUE 1": "🇫🇷", "COUPE DE FRANCE": "🇫🇷", "FRANCE": "🇫🇷",
-    "CHAMPIONS": "🇪🇺", "EUROPA": "🇪🇺", "CONFERENCE": "🇪🇺", "UEFA": "🇪🇺", "NATIONS": "🇪🇺",
-    "EREDIVISIE": "🇳🇱", "NETHERLANDS": "🇳🇱", "DUTCH": "🇳🇱",
+    "CHAMPIONS": "🇪🇺", "EUROPA": "🇪🇺", "CONFERENCE": "🇪🇺", "UEFA": "🇪🇺",
+    "EREDIVISIE": "🇳🇱", "NETHERLANDS": "🇳🇱",
     "PRIMEIRA": "🇵🇹", "PORTUGAL": "🇵🇹",
     "SUPER LIG": "🇹🇷", "TURKEY": "🇹🇷",
     "MLS": "🇺🇸", "USA": "🇺🇸",
     "LIGA MX": "🇲🇽", "MEXICO": "🇲🇽",
     "BRASILEIRA": "🇧🇷", "BRAZIL": "🇧🇷",
-    "SAUDI": "🇸🇦",
-    "SCOTTISH": "🏴󠁧󠁢󠁳󠁣󠁴󠁿", "SCOTLAND": "🏴󠁧󠁢󠁳󠁣󠁴󠁿",
-    "BELGIAN": "🇧🇪", "BELGIUM": "🇧🇪",
-    "AUSTRIAN": "🇦🇹", "AUSTRIA": "🇦🇹",
-    "SWISS": "🇨🇭", "SWITZERLAND": "🇨🇭",
+    "SAUDI": "🇸🇦", "SCOTTISH": "🏴󠁧󠁢󠁳󠁣󠁴󠁿",
+    "ARGENTINA": "🇦🇷", "ARGENTINE": "🇦🇷",
     "WORLD CUP": "🌍", "EURO": "🇪🇺", "COPA AMERICA": "🌎",
-    "AFRICAN": "🌍", "AFCON": "🌍", "AFRICA": "🌍",
-    "ARGENTINA": "🇦🇷", "ARGENTINE": "🇦🇷"
+    "AFRICAN": "🌍", "AFCON": "🌍"
   }
 };
 
 // ============================================
-// MASTER INSTRUCTION - BETTING FOCUSED
+// CLEAN FORMAT INSTRUCTION
 // ============================================
-const MASTER_INSTRUCTION = `You are the HEAD BETTING ANALYST at "Global Score News" - the #1 football betting tips page. Create a COMPREHENSIVE daily betting guide.
+const MASTER_INSTRUCTION = `You are the HEAD BETTING ANALYST at "Global Score News". Create a CLEAN, PROFESSIONAL betting guide.
 
-═══════════════════════════════════════════
-📋 POST STRUCTURE (FOLLOW EXACTLY):
-═══════════════════════════════════════════
+══════════════════════════════════════════════════
+📋 EXACT FORMAT TO FOLLOW (COPY THIS STRUCTURE):
+══════════════════════════════════════════════════
 
-𝟭. 𝗛𝗘𝗔𝗗𝗘𝗥:
 ⚽ 𝗙𝗢𝗢𝗧𝗕𝗔𝗟𝗟 𝗗𝗔𝗜𝗟𝗬 | [Day Date Month Year]
-
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 📊 [X] Matches Today | [Y] Top Picks Inside! 🎯
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
-━━━━━━━━━━━━━━━━━━━━━
 
-𝟮. 🔴 𝗟𝗜𝗩𝗘 𝗦𝗖𝗢𝗥𝗘𝗦 (if any live matches):
-[Flag] [League]
-[Home] [Score] [Away] ⏱️ [Min]'
-(Group by league, 2-3 lines per match max)
+🔴 𝗟𝗜𝗩𝗘 𝗦𝗖𝗢𝗥𝗘𝗦
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
-━━━━━━━━━━━━━━━━━━━━━
+[Flag] 𝗟𝗲𝗮𝗴𝘂𝗲 𝗡𝗮𝗺𝗲
+   • Team A 2-1 Team B ⏱️ 67'
+   • Team C 0-0 Team D ⏱️ 45'
 
-𝟯. ✅ 𝗧𝗢𝗗𝗔𝗬'𝗦 𝗥𝗘𝗦𝗨𝗟𝗧𝗦:
-[Flag] [League]
-[Home] [Score] [Away] ✅/🤝/❌
-(List ALL finished matches, group by league)
+[Flag] 𝗟𝗲𝗮𝗴𝘂𝗲 𝗡𝗮𝗺𝗲
+   • Team E 1-0 Team F ⏱️ 32'
 
-━━━━━━━━━━━━━━━━━━━━━
 
-𝟰. 🎯 𝗧𝗢𝗗𝗔𝗬'𝗦 𝗕𝗘𝗧𝗧𝗜𝗡𝗚 𝗣𝗥𝗘𝗗𝗜𝗖𝗧𝗜𝗢𝗡𝗦 (MAIN SECTION - DETAILED):
+✅ 𝗧𝗢𝗗𝗔𝗬'𝗦 𝗥𝗘𝗦𝗨𝗟𝗧𝗦
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
-For EACH upcoming match (5-10 picks), use this format:
+[Flag] 𝗟𝗲𝗮𝗴𝘂𝗲 𝗡𝗮𝗺𝗲
+   • Team A 3-1 Team B ✅
+   • Team C 2-2 Team D 🤝
+   • Team E 0-1 Team F ❌
 
-━━━━━━━━━━━━━━━━━━━━━
+[Flag] 𝗟𝗲𝗮𝗴𝘂𝗲 𝗡𝗮𝗺𝗲
+   • Team G 2-0 Team H ✅
 
-[Flag] 𝗟𝗲𝗮𝗴𝘂𝗲 𝗡𝗮𝗺𝗲 • [Kick-off Time]
 
-⚽ [Home Team] vs [Away Team]
+🎯 𝗧𝗢𝗣 𝗣𝗥𝗘𝗗𝗜𝗖𝗧𝗜𝗢𝗡𝗦
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
-📊 𝗢𝗗𝗗𝗦: [Home] | [Draw] | [Away]
+┌─────────────────────────────┐
+│ [Flag] 𝗟𝗲𝗮𝗴𝘂𝗲 • Time         │
+└─────────────────────────────┘
 
-📈 𝗦𝗧𝗔𝗧𝗦:
-• [Home team] form: [W/D/L last 5] 
-• [Away team] form: [W/D/L last 5]
-• H2H: [Key head-to-head stat]
-• [Relevant goal/clean sheet stat]
-• [Another key stat]
+⚽ 𝗛𝗼𝗺𝗲 𝗧𝗲𝗮𝗺 𝘃𝘀 𝗔𝘄𝗮𝘆 𝗧𝗲𝗮𝗺
 
-🔮 𝗣𝗥𝗘𝗗𝗜𝗖𝗧𝗜𝗢𝗡: [Specific Pick - e.g., "Home Win & Over 1.5 Goals"]
-📍 𝗢𝗗𝗗𝗦: @[odds for this pick]
-⚠️ 𝗥𝗜𝗦𝗞: ⭐ Low / ⭐⭐ Medium / ⭐⭐⭐ High
+   📊 Odds: 1.75 │ 3.50 │ 4.20
 
-💡 𝗔𝗡𝗔𝗟𝗬𝗦𝗜𝗦:
-[3-4 sentences explaining WHY this bet is good. Include form, injuries, motivation, historical data. Be specific and confident.]
+   📈 𝗦𝘁𝗮𝘁𝘀:
+   ├ Home form: W3 D1 L1
+   ├ Away form: W2 D2 L1  
+   ├ H2H: Home 3 wins in last 5
+   └ Avg goals: 2.6 per game
 
-━━━━━━━━━━━━━━━━━━━━━
+   🔮 𝗣𝗶𝗰𝗸: Home Win & Over 1.5
+   💰 𝗢𝗱𝗱𝘀: @1.90
+   ⚠️ 𝗥𝗶𝘀𝗸: ⭐⭐ Medium
 
-𝟱. 🔥 𝗔𝗖𝗖𝗨𝗠𝗨𝗟𝗔𝗧𝗢𝗥 𝗢𝗙 𝗧𝗛𝗘 𝗗𝗔𝗬:
+   💡 Home team dominant at home with
+   4 wins in last 5. Away team struggling
+   on the road. Expect comfortable win.
 
-[X]-Fold @ [Total Odds]:
+─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─
 
-1️⃣ [Match] → [Pick] @[Odds]
-2️⃣ [Match] → [Pick] @[Odds]
-3️⃣ [Match] → [Pick] @[Odds]
-4️⃣ [Match] → [Pick] @[Odds]
-5️⃣ [Match] → [Pick] @[Odds]
+┌─────────────────────────────┐
+│ [Flag] 𝗟𝗲𝗮𝗴𝘂𝗲 • Time         │
+└─────────────────────────────┘
 
-💰 £10 returns £[Amount]
+[REPEAT FOR EACH PREDICTION - 5 to 8 total]
 
-━━━━━━━━━━━━━━━━━━━━━
+─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─
 
-𝟲. 📈 𝗧𝗢𝗗𝗔𝗬'𝗦 𝗩𝗔𝗟𝗨𝗘 𝗕𝗘𝗧𝗦:
 
-🔹 SAFEST: [Match] → [Pick] @[Low Odds] ✅
-🔹 VALUE: [Match] → [Pick] @[Medium Odds] 🎯
-🔹 LONGSHOT: [Match] → [Pick] @[High Odds] 🎲
+🔥 𝗔𝗖𝗖𝗨𝗠𝗨𝗟𝗔𝗧𝗢𝗥 𝗢𝗙 𝗧𝗛𝗘 𝗗𝗔𝗬
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
-━━━━━━━━━━━━━━━━━━━━━
+5-Fold @ 12.50 odds:
 
-𝟳. 💰 𝗧𝗘𝗟𝗘𝗚𝗥𝗔𝗠 𝗖𝗧𝗔 (EXACTLY AS WRITTEN):
+   1️⃣ Match 1 
+      → Pick @Odds ✅
+
+   2️⃣ Match 2 
+      → Pick @Odds ✅
+
+   3️⃣ Match 3 
+      → Pick @Odds ✅
+
+   4️⃣ Match 4 
+      → Pick @Odds ✅
+
+   5️⃣ Match 5 
+      → Pick @Odds ✅
+
+   💰 £10 → Returns £125.00
+
+
+📈 𝗩𝗔𝗟𝗨𝗘 𝗕𝗘𝗧𝗦
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+   🟢 𝗦𝗔𝗙𝗘: Match → Pick @Odds
+
+   🟡 𝗩𝗔𝗟𝗨𝗘: Match → Pick @Odds
+
+   🔴 𝗟𝗢𝗡𝗚𝗦𝗛𝗢𝗧: Match → Pick @Odds
+
 
 💰 𝗪𝗔𝗡𝗧 𝗠𝗢𝗥𝗘 𝗪𝗜𝗡𝗡𝗘𝗥𝗦?
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
-Join 5,000+ members getting FREE daily tips!
+Join 5,000+ members getting FREE tips!
 
-✅ Full match analysis
-✅ Live in-play alerts
-✅ Accumulators daily
-✅ Stats & H2H data
-✅ VIP picks
+   ✅ Full match analysis
+   ✅ Live in-play alerts
+   ✅ Daily accumulators
+   ✅ VIP exclusive picks
 
 👉 𝗝𝗢𝗜𝗡 𝗙𝗥𝗘𝗘: https://t.me/+9uDCOJXm_R1hMzM0
 
-🔔 Don't miss today's winners!
+⚠️ 18+ | Gamble Responsibly
 
-⚠️ Gamble responsibly. 18+ only.
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
-━━━━━━━━━━━━━━━━━━━━━
+#GlobalScoreNews #Football #BettingTips #FreeTips #Predictions
 
-𝟴. 𝗛𝗔𝗦𝗛𝗧𝗔𝗚𝗦 (15-20):
-#GlobalScoreNews #Football #BettingTips #FreeTips #[LeagueTags] #Predictions #Accumulator #BTTS #Over25Goals #SoccerBetting
+══════════════════════════════════════════════════
+📝 CRITICAL FORMATTING RULES:
+══════════════════════════════════════════════════
 
-═══════════════════════════════════════════
-📝 BETTING PREDICTION TYPES TO USE:
-═══════════════════════════════════════════
+1. USE THESE EXACT LINE SEPARATORS:
+   • Main sections: ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+   • Between predictions: ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─
+   • Box top: ┌─────────────────────────────┐
+   • Box bottom: └─────────────────────────────┘
 
-• Home Win / Away Win / Draw
-• Double Chance (1X, X2, 12)
-• Over/Under 0.5, 1.5, 2.5, 3.5 Goals
-• Both Teams To Score (BTTS) Yes/No
-• BTTS & Over 2.5
-• Home/Away Win & Over/Under
-• Asian Handicap (-0.5, -1, -1.5, -2)
-• Correct Score (for confident picks)
-• Half-Time Result
-• First/Last Goalscorer mention
-• Corner bets mention
-• Clean Sheet Yes/No
+2. INDENTATION:
+   • Use 3 spaces before bullet points
+   • Use │ for odds separator (not |)
+   • Use ├ and └ for stats list
 
-═══════════════════════════════════════════
-⚠️ IMPORTANT RULES:
-═══════════════════════════════════════════
+3. UNICODE BOLD for headers:
+   𝗔𝗕𝗖𝗗𝗘𝗙𝗚𝗛𝗜𝗝𝗞𝗟𝗠𝗡𝗢𝗣𝗤𝗥𝗦𝗧𝗨𝗩𝗪𝗫𝗬𝗭
+   𝗮𝗯𝗰𝗱𝗲𝗳𝗴𝗵𝗶𝗷𝗸𝗹𝗺𝗻𝗼𝗽𝗾𝗿𝘀𝘁𝘂𝘃𝘄𝘅𝘆𝘇
 
-1. Be SPECIFIC with predictions (not just "Home Win" but "Home Win & Over 1.5")
-2. Include STATS that support the prediction
-3. ODDS must be realistic (1.20-10.00 range typically)
-4. Risk rating: ⭐ = Very Safe, ⭐⭐ = Medium, ⭐⭐⭐ = Risky
-5. Analysis must explain WHY the bet is good
-6. Use 𝗯𝗼𝗹𝗱 𝘂𝗻𝗶𝗰𝗼𝗱𝗲 for headers
-7. Include ALL matches provided
-8. Make accumulator from your best 4-6 picks
-9. Sound like a PROFESSIONAL betting analyst
-10. Total post: 600-1000 words
+4. EMOJIS TO USE:
+   • Results: ✅ (home win) 🤝 (draw) ❌ (away win)
+   • Sections: 🔴 🎯 ✅ 🔥 📈 💰
+   • Stats: 📊 📈 🔮 💡 ⚠️
+   • Value: 🟢 🟡 🔴
 
-OUTPUT FORMAT (JSON only):
+5. ONLY USE TOP LEAGUES for predictions:
+   Premier League, La Liga, Bundesliga, Serie A, Ligue 1,
+   Champions League, Europa League
+
+6. SKIP minor leagues like:
+   Bahrain, Mauritania, Barbados, Sudan, U17, U21, Women's lower leagues
+
+7. EACH PREDICTION MUST HAVE:
+   • Odds for all 3 outcomes
+   • 4 stats with ├ └ format
+   • Specific pick (not just "Home Win")
+   • Risk rating with stars
+   • 3-4 line analysis
+
+8. KEEP IT CLEAN:
+   • Empty line between sections
+   • Consistent spacing
+   • No messy text
+   • Professional look
+
+OUTPUT FORMAT (JSON only, no code blocks):
 {
-  "post_text": "<complete post>",
-  "hashtags": ["#GlobalScoreNews", "#Football", "#BettingTips", ...]
+  "post_text": "<complete formatted post>",
+  "hashtags": ["#GlobalScoreNews", "#Football", "#BettingTips", "#FreeTips", "#Predictions"]
 }`;
 
 // ============================================
@@ -280,6 +307,20 @@ function formatOdds(odds) {
 function isTopLeague(leagueName) {
   if (!leagueName) return false;
   const upper = leagueName.toUpperCase();
+  
+  // Exclude youth, women's minor, and small country leagues
+  const excludePatterns = [
+    "U17", "U18", "U19", "U20", "U21", "U23",
+    "YOUTH", "RESERVE", "AMATEUR",
+    "BAHRAIN", "MAURITANIA", "BARBADOS", "SUDAN", "KENYA",
+    "CAMBODIA", "VIETNAM", "LAOS", "MYANMAR",
+    "WOMEN U", "GIRL"
+  ];
+  
+  for (const pattern of excludePatterns) {
+    if (upper.includes(pattern)) return false;
+  }
+  
   return CONFIG.TOP_LEAGUES.some(league => upper.includes(league));
 }
 
@@ -337,7 +378,7 @@ function getHoursSinceLastPost(history) {
 
 function recordPost(history, matchCount) {
   const today = getTodayDate();
-  history.posts.push({ postedAt: new Date().toISOString(), matchCount, type: 'betting_analysis' });
+  history.posts.push({ postedAt: new Date().toISOString(), matchCount });
   history.dailyCount[today] = (history.dailyCount[today] || 0) + 1;
   history.lastPost = new Date().toISOString();
   saveHistory(history);
@@ -355,21 +396,19 @@ function shouldPostNow(history) {
   const seed = parseInt(getTodayDate().replace(/-/g, ''));
   const target = CONFIG.MIN_POSTS_PER_DAY + (seed % (CONFIG.MAX_POSTS_PER_DAY - CONFIG.MIN_POSTS_PER_DAY + 1));
   
-  console.log(`\n📊 Post Check:`);
-  console.log(`   Hour: ${hour} UTC | Posts: ${count}/${target} | Since last: ${hoursSince.toFixed(1)}h`);
+  console.log(`\n📊 Check: ${count}/${target} posts | ${hoursSince.toFixed(1)}h ago`);
   
-  if (count >= target) { console.log("   ❌ Daily limit"); return false; }
-  if (hoursSince < CONFIG.MIN_HOURS_BETWEEN_POSTS) { console.log("   ❌ Too soon"); return false; }
+  if (count >= target) { console.log("   ❌ Limit"); return false; }
+  if (hoursSince < CONFIG.MIN_HOURS_BETWEEN_POSTS) { console.log("   ❌ Soon"); return false; }
   
   let chance = CONFIG.BASE_POST_CHANCE;
   if (CONFIG.QUIET_HOURS.includes(hour)) chance *= 0.2;
   else if (CONFIG.PEAK_HOURS.includes(hour)) chance *= 1.5;
   
   const roll = Math.random();
-  const willPost = roll < chance;
-  console.log(`   🎲 ${(chance*100).toFixed(0)}% chance | ${willPost ? '✅ POSTING' : '⏭️ SKIP'}`);
+  console.log(`   🎲 ${(chance*100).toFixed(0)}% | ${roll < chance ? '✅ POST' : '⏭️ SKIP'}`);
   
-  return willPost;
+  return roll < chance;
 }
 
 // ============================================
@@ -377,10 +416,9 @@ function shouldPostNow(history) {
 // ============================================
 
 async function fetchAllMatches() {
-  console.log("\n📡 Fetching all matches...");
+  console.log("\n📡 Fetching matches...");
   let allMatches = [];
   
-  // Live
   try {
     const res = await fetch("https://api.sportdb.dev/api/flashscore/football/live", {
       headers: { "X-API-Key": SPORTDB_API_KEY }
@@ -389,13 +427,12 @@ async function fetchAllMatches() {
       const data = await res.json();
       const matches = Array.isArray(data) ? data : (data.matches || data.events || data.data || []);
       console.log(`   🔴 Live: ${matches.length}`);
-      allMatches.push(...matches.map(m => ({ ...m, _source: 'live' })));
+      allMatches.push(...matches);
     }
   } catch (e) {
-    console.log(`   ⚠️ Live error: ${e.message}`);
+    console.log(`   ⚠️ Live error`);
   }
   
-  // Today
   try {
     const res = await fetch("https://api.sportdb.dev/api/flashscore/football/today", {
       headers: { "X-API-Key": SPORTDB_API_KEY }
@@ -407,11 +444,11 @@ async function fetchAllMatches() {
       for (const m of matches) {
         const key = `${m.homeName || m.homeFirstName}_${m.awayName || m.awayFirstName}`;
         const exists = allMatches.some(e => `${e.homeName || e.homeFirstName}_${e.awayName || e.awayFirstName}` === key);
-        if (!exists) allMatches.push({ ...m, _source: 'today' });
+        if (!exists) allMatches.push(m);
       }
     }
   } catch (e) {
-    console.log(`   ⚠️ Today error: ${e.message}`);
+    console.log(`   ⚠️ Today error`);
   }
   
   console.log(`   📊 Total: ${allMatches.length}`);
@@ -426,17 +463,14 @@ function getMatchStatus(m) {
   const status = (m.eventStage || m.status || "").toUpperCase();
   if (status.includes("1ST") || status.includes("2ND") || status === "LIVE" || status === "1H" || status === "2H") return "LIVE";
   if (status.includes("HT") || status === "HALFTIME") return "HT";
-  if (["FINISHED", "ENDED", "FT", "AET", "AFTER ET", "AFTER PEN", "FULL TIME", "AP", "PEN"].includes(status)) return "FT";
+  if (["FINISHED", "ENDED", "FT", "AET", "AP", "PEN"].includes(status)) return "FT";
   if (status.includes("POSTPONED") || status.includes("CANCELLED")) return "CANCELLED";
   return "NS";
 }
 
 function transformMatch(raw) {
   const status = getMatchStatus(raw);
-  const league = raw.leagueName || raw.tournamentName || raw.league || "";
-  
-  // Generate mock form/stats for AI to use (in production, you'd get real data)
-  const mockStats = generateMockStats(raw);
+  const league = raw.leagueName || raw.tournamentName || "";
   
   return {
     home_team: raw.homeName || raw.homeFirstName || "Unknown",
@@ -453,49 +487,38 @@ function transformMatch(raw) {
     odds: formatOdds(raw.odds) || generateMockOdds(),
     priority: getLeaguePriority(league),
     isTopLeague: isTopLeague(league),
-    stats: mockStats
+    stats: generateMockStats()
   };
 }
 
 function generateMockOdds() {
-  // Generate realistic-looking odds
-  const homeOdds = (1.2 + Math.random() * 3).toFixed(2);
-  const drawOdds = (2.5 + Math.random() * 2).toFixed(2);
-  const awayOdds = (1.5 + Math.random() * 4).toFixed(2);
-  return { home: homeOdds, draw: drawOdds, away: awayOdds };
+  return {
+    home: (1.3 + Math.random() * 2.5).toFixed(2),
+    draw: (2.8 + Math.random() * 1.5).toFixed(2),
+    away: (2.0 + Math.random() * 3).toFixed(2)
+  };
 }
 
-function generateMockStats(raw) {
-  // Generate plausible stats for analysis
+function generateMockStats() {
   const forms = ['W', 'D', 'L'];
-  const homeForm = Array(5).fill(0).map(() => forms[Math.floor(Math.random() * 3)]).join('');
-  const awayForm = Array(5).fill(0).map(() => forms[Math.floor(Math.random() * 3)]).join('');
-  const h2hWins = Math.floor(Math.random() * 6);
-  const avgGoals = (1.5 + Math.random() * 1.5).toFixed(1);
-  
   return {
-    homeForm: homeForm,
-    awayForm: awayForm,
-    h2h: `${h2hWins} wins in last 5`,
-    avgGoals: avgGoals
+    homeForm: Array(5).fill(0).map(() => forms[Math.floor(Math.random() * 3)]).join(''),
+    awayForm: Array(5).fill(0).map(() => forms[Math.floor(Math.random() * 3)]).join(''),
+    h2h: `${Math.floor(Math.random() * 4) + 1} wins in last 5`,
+    avgGoals: (2.0 + Math.random() * 1.5).toFixed(1)
   };
 }
 
 function processMatches(rawMatches) {
   const valid = rawMatches.filter(m => (m.homeName || m.homeFirstName) && (m.awayName || m.awayFirstName));
   const transformed = valid.map(transformMatch).filter(m => m.status !== "CANCELLED");
-  
-  // Sort by priority
   transformed.sort((a, b) => a.priority - b.priority);
   
-  // Categorize
-  const categories = {
+  return {
     live: transformed.filter(m => m.status === "LIVE" || m.status === "HT"),
     finished: transformed.filter(m => m.status === "FT"),
     upcoming: transformed.filter(m => m.status === "NS")
   };
-  
-  return categories;
 }
 
 function groupByLeague(matches) {
@@ -515,23 +538,24 @@ function groupByLeague(matches) {
 function buildMatchDataString(categories) {
   let data = `📅 DATE: ${getTodayFormatted()}\n\n`;
   
-  const totalMatches = categories.live.length + categories.finished.length + categories.upcoming.length;
-  data += `📊 TOTAL MATCHES TODAY: ${totalMatches}\n`;
+  const total = categories.live.length + categories.finished.length + categories.upcoming.length;
+  data += `📊 TOTAL: ${total} matches\n`;
   data += `   🔴 Live: ${categories.live.length}\n`;
   data += `   ✅ Finished: ${categories.finished.length}\n`;
   data += `   📅 Upcoming: ${categories.upcoming.length}\n\n`;
   
-  // LIVE
-  if (categories.live.length > 0) {
-    data += "═══════════════════════════════════════\n";
-    data += "🔴 LIVE MATCHES\n";
-    data += "═══════════════════════════════════════\n\n";
+  // LIVE - Only top leagues
+  const topLive = categories.live.filter(m => m.isTopLeague);
+  if (topLive.length > 0) {
+    data += "══════════════════════════════\n";
+    data += "🔴 LIVE MATCHES (TOP LEAGUES)\n";
+    data += "══════════════════════════════\n\n";
     
-    const liveGroups = groupByLeague(categories.live);
-    for (const group of liveGroups) {
-      data += `${group.flag} ${group.name}\n`;
-      for (const m of group.matches) {
-        data += `• ${m.home_team} ${m.score.home}-${m.score.away} ${m.away_team}`;
+    const groups = groupByLeague(topLive);
+    for (const g of groups) {
+      data += `${g.flag} ${g.name}\n`;
+      for (const m of g.matches) {
+        data += `   • ${m.home_team} ${m.score.home}-${m.score.away} ${m.away_team}`;
         if (m.minute) data += ` (${m.minute}')`;
         data += "\n";
       }
@@ -539,65 +563,46 @@ function buildMatchDataString(categories) {
     }
   }
   
-  // FINISHED
-  if (categories.finished.length > 0) {
-    data += "═══════════════════════════════════════\n";
-    data += "✅ FINISHED MATCHES\n";
-    data += "═══════════════════════════════════════\n\n";
+  // FINISHED - Only top leagues
+  const topFinished = categories.finished.filter(m => m.isTopLeague);
+  if (topFinished.length > 0) {
+    data += "══════════════════════════════\n";
+    data += "✅ RESULTS (TOP LEAGUES)\n";
+    data += "══════════════════════════════\n\n";
     
-    const finishedGroups = groupByLeague(categories.finished);
-    for (const group of finishedGroups) {
-      data += `${group.flag} ${group.name}\n`;
-      for (const m of group.matches) {
-        const result = m.score.home > m.score.away ? "✅" : m.score.home < m.score.away ? "❌" : "🤝";
-        data += `• ${m.home_team} ${m.score.home}-${m.score.away} ${m.away_team} ${result}\n`;
+    const groups = groupByLeague(topFinished);
+    for (const g of groups) {
+      data += `${g.flag} ${g.name}\n`;
+      for (const m of g.matches) {
+        const emoji = m.score.home > m.score.away ? "✅" : m.score.home < m.score.away ? "❌" : "🤝";
+        data += `   • ${m.home_team} ${m.score.home}-${m.score.away} ${m.away_team} ${emoji}\n`;
       }
       data += "\n";
     }
   }
   
-  // UPCOMING (with details for predictions)
-  if (categories.upcoming.length > 0) {
-    data += "═══════════════════════════════════════\n";
-    data += "📅 UPCOMING MATCHES (FOR PREDICTIONS)\n";
-    data += "═══════════════════════════════════════\n\n";
+  // UPCOMING - Only top leagues for predictions
+  const topUpcoming = categories.upcoming.filter(m => m.isTopLeague).slice(0, 10);
+  if (topUpcoming.length > 0) {
+    data += "══════════════════════════════\n";
+    data += "📅 UPCOMING (FOR PREDICTIONS)\n";
+    data += "══════════════════════════════\n\n";
     
-    // Prioritize top league matches
-    const topUpcoming = categories.upcoming.filter(m => m.isTopLeague);
-    const otherUpcoming = categories.upcoming.filter(m => !m.isTopLeague);
-    const allUpcoming = [...topUpcoming, ...otherUpcoming];
-    
-    // Take top 10-15 for detailed predictions
-    const forPredictions = allUpcoming.slice(0, Math.min(15, allUpcoming.length));
-    
-    const upcomingGroups = groupByLeague(forPredictions);
-    for (const group of upcomingGroups) {
-      data += `${group.flag} ${group.name}\n`;
-      data += "─────────────────────────────────\n";
+    const groups = groupByLeague(topUpcoming);
+    for (const g of groups) {
+      data += `${g.flag} ${g.name}\n`;
+      data += "─────────────────────────────\n";
       
-      for (const m of group.matches) {
+      for (const m of g.matches) {
         data += `\n⚽ ${m.home_team} vs ${m.away_team}\n`;
-        if (m.kickoff_time) data += `🕐 Kick-off: ${m.kickoff_time}\n`;
-        if (m.odds) data += `📊 Odds: ${m.odds.home} | ${m.odds.draw} | ${m.odds.away}\n`;
-        if (m.stats) {
-          data += `📈 ${m.home_team} last 5: ${m.stats.homeForm}\n`;
-          data += `📈 ${m.away_team} last 5: ${m.stats.awayForm}\n`;
-          data += `📈 H2H: ${m.stats.h2h}\n`;
-          data += `📈 Avg goals: ${m.stats.avgGoals}\n`;
-        }
-        data += "\n";
+        if (m.kickoff_time) data += `   🕐 ${m.kickoff_time}\n`;
+        data += `   📊 Odds: ${m.odds.home} │ ${m.odds.draw} │ ${m.odds.away}\n`;
+        data += `   📈 ${m.home_team}: ${m.stats.homeForm}\n`;
+        data += `   📈 ${m.away_team}: ${m.stats.awayForm}\n`;
+        data += `   📈 H2H: ${m.stats.h2h}\n`;
+        data += `   📈 Avg: ${m.stats.avgGoals} goals\n`;
       }
       data += "\n";
-    }
-    
-    // List remaining upcoming briefly
-    if (allUpcoming.length > 15) {
-      data += "OTHER UPCOMING MATCHES:\n";
-      for (const m of allUpcoming.slice(15)) {
-        data += `• ${m.home_team} vs ${m.away_team}`;
-        if (m.kickoff_time) data += ` (${m.kickoff_time})`;
-        data += "\n";
-      }
     }
   }
   
@@ -609,27 +614,26 @@ function buildMatchDataString(categories) {
 // ============================================
 
 async function generatePost(matchData) {
-  console.log("\n🤖 Generating betting analysis...");
+  console.log("\n🤖 Generating clean post...");
   
   const prompt = `${MASTER_INSTRUCTION}
 
-═══════════════════════════════════════════
-📊 TODAY'S MATCH DATA:
-═══════════════════════════════════════════
+══════════════════════════════════════════════════
+📊 TODAY'S DATA:
+══════════════════════════════════════════════════
 
 ${matchData}
 
-═══════════════════════════════════════════
+══════════════════════════════════════════════════
 
-Create the COMPLETE betting analysis post now.
-Include ALL live/finished matches listed.
-Make 5-10 DETAILED predictions for upcoming matches.
-Include an accumulator of your best picks.
-Include value bets section.
+Create a CLEAN, PROFESSIONAL betting post now.
+ONLY use TOP LEAGUES for predictions.
+Follow the EXACT format shown above.
+Use proper line separators and indentation.
 
-Return ONLY valid JSON, no markdown code blocks.`;
+Return ONLY valid JSON.`;
 
-  const models = ["llama-3.3-70b-versatile", "llama-3.1-70b-versatile", "llama-3.1-8b-instant", "mixtral-8x7b-32768"];
+  const models = ["llama-3.3-70b-versatile", "llama-3.1-70b-versatile", "llama-3.1-8b-instant"];
   
   for (const model of models) {
     try {
@@ -644,31 +648,27 @@ Return ONLY valid JSON, no markdown code blocks.`;
         body: JSON.stringify({
           model,
           messages: [
-            { role: "system", content: "You are an expert football betting analyst. Create professional, detailed betting content. Respond with valid JSON only." },
+            { role: "system", content: "You are a professional betting analyst. Create clean, well-formatted content. JSON only." },
             { role: "user", content: prompt }
           ],
-          temperature: 0.85,
+          temperature: 0.8,
           max_tokens: 4000
         })
       });
       
       if (res.status === 429) {
-        console.log("   ⚠️ Rate limited, waiting...");
+        console.log("   ⚠️ Rate limit");
         await delay(10000);
         continue;
       }
       
-      if (!res.ok) {
-        console.log(`   ❌ Error: ${res.status}`);
-        continue;
-      }
+      if (!res.ok) continue;
       
       const data = await res.json();
       let text = data?.choices?.[0]?.message?.content || "";
       
       if (!text) continue;
       
-      // Clean JSON
       text = text.trim();
       if (text.startsWith("```json")) text = text.slice(7);
       else if (text.startsWith("```")) text = text.slice(3);
@@ -696,7 +696,7 @@ Return ONLY valid JSON, no markdown code blocks.`;
 // ============================================
 
 async function postToFacebook(message) {
-  console.log("\n📘 Posting to Facebook...");
+  console.log("\n📘 Posting...");
   
   const res = await fetch(`https://graph.facebook.com/v19.0/${FB_PAGE_ID}/feed`, {
     method: "POST",
@@ -708,7 +708,7 @@ async function postToFacebook(message) {
   
   if (!res.ok) {
     const err = await res.text();
-    throw new Error(`Facebook: ${res.status} - ${err}`);
+    throw new Error(`FB: ${res.status}`);
   }
   
   console.log("   ✅ Posted!");
@@ -716,17 +716,12 @@ async function postToFacebook(message) {
 }
 
 function buildFinalMessage(response) {
-  let message = response.post_text || "";
-  
-  // Ensure correct Telegram link
-  message = message.replace(/t\.me\/\+[\w-]+/g, "t.me/+9uDCOJXm_R1hMzM0");
-  
-  // Add hashtags
-  if (response.hashtags && !message.includes("#GlobalScoreNews")) {
-    message += "\n\n" + response.hashtags.join(" ");
+  let msg = response.post_text || "";
+  msg = msg.replace(/t\.me\/\+[\w-]+/g, "t.me/+9uDCOJXm_R1hMzM0");
+  if (response.hashtags && !msg.includes("#GlobalScoreNews")) {
+    msg += "\n\n" + response.hashtags.join(" ");
   }
-  
-  return message.trim();
+  return msg.trim();
 }
 
 // ============================================
@@ -734,64 +729,50 @@ function buildFinalMessage(response) {
 // ============================================
 
 async function main() {
-  console.log("═".repeat(60));
-  console.log("⚽ GLOBAL SCORE NEWS v6.0 - Betting Analysis Edition");
-  console.log("═".repeat(60));
-  console.log(`⏰ ${new Date().toISOString()}`);
+  console.log("═".repeat(50));
+  console.log("⚽ GLOBAL SCORE NEWS v7.0 - Clean Format");
+  console.log("═".repeat(50));
   
   assertEnv();
   
   const history = loadHistory();
   
   if (!FORCE_POST && !shouldPostNow(history)) {
-    console.log("\n👋 Skipping.");
+    console.log("\n👋 Skip");
     return;
   }
   
-  if (FORCE_POST) console.log("\n⚡ FORCE POST");
+  if (FORCE_POST) console.log("\n⚡ FORCE");
   
-  // Fetch matches
-  const rawMatches = await fetchAllMatches();
-  if (!rawMatches?.length) {
-    console.log("⚠️ No matches");
-    return;
-  }
+  const raw = await fetchAllMatches();
+  if (!raw?.length) { console.log("⚠️ No matches"); return; }
   
-  // Process
-  const categories = processMatches(rawMatches);
-  const total = categories.live.length + categories.finished.length + categories.upcoming.length;
+  const cats = processMatches(raw);
+  const total = cats.live.length + cats.finished.length + cats.upcoming.length;
   
-  console.log(`\n📊 Processed: ${total} matches`);
-  console.log(`   🔴 ${categories.live.length} live`);
-  console.log(`   ✅ ${categories.finished.length} finished`);
-  console.log(`   📅 ${categories.upcoming.length} upcoming`);
+  console.log(`\n📊 ${total} total | ${cats.live.length} live | ${cats.finished.length} FT | ${cats.upcoming.length} upcoming`);
   
-  if (total < 5) {
-    console.log("⚠️ Not enough matches");
-    return;
-  }
+  const topTotal = cats.live.filter(m => m.isTopLeague).length +
+                   cats.finished.filter(m => m.isTopLeague).length +
+                   cats.upcoming.filter(m => m.isTopLeague).length;
   
-  // Build data
-  const matchData = buildMatchDataString(categories);
+  console.log(`   🏆 Top leagues: ${topTotal}`);
   
-  // Generate
+  if (topTotal < 3) { console.log("⚠️ Not enough top matches"); return; }
+  
+  const matchData = buildMatchDataString(cats);
   const response = await generatePost(matchData);
-  const finalMessage = buildFinalMessage(response);
+  const final = buildFinalMessage(response);
   
-  // Preview
-  console.log("\n" + "═".repeat(60));
-  console.log("📝 POST PREVIEW:");
-  console.log("═".repeat(60));
-  console.log(finalMessage);
-  console.log("═".repeat(60));
-  console.log(`📏 ${finalMessage.length} chars | ${total} matches`);
+  console.log("\n" + "═".repeat(50));
+  console.log(final);
+  console.log("═".repeat(50));
+  console.log(`📏 ${final.length} chars`);
   
-  // Post
-  const result = await postToFacebook(finalMessage);
+  const result = await postToFacebook(final);
   recordPost(history, total);
   
-  console.log(`\n✅ SUCCESS! ID: ${result.id}`);
-  console.log(`   Today: ${getTodayCount(history)} posts`);
+  console.log(`\n✅ Done! ID: ${result.id}`);
 }
 
 main().catch(e => {
