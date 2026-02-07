@@ -22,22 +22,48 @@ var CONFIG = {
   BASE_POST_CHANCE: 0.30,
   TELEGRAM_URL: "https://t.me/+9uDCOJXm_R1hMzM0",
   
-  // INCREASED LIMITS
-  MAX_LIVE_MATCHES: 20,
-  MAX_FINISHED_MATCHES: 30,
-  MAX_PREDICTIONS: 10,
+  MAX_LIVE_MATCHES: 25,
+  MAX_FINISHED_MATCHES: 35,
+  MAX_PREDICTIONS: 12,
   MAX_ACCA_PICKS: 6,
   
+  // TOP LEAGUES ONLY - Most important leagues
   TOP_LEAGUES: [
-    "PREMIER LEAGUE", "CHAMPIONS LEAGUE", "LA LIGA", "LALIGA",
-    "BUNDESLIGA", "SERIE A", "LIGUE 1", "EUROPA LEAGUE",
-    "FA CUP", "COPA DEL REY", "DFB POKAL", "COPPA ITALIA",
-    "CARABAO CUP", "SAUDI PRO", "MLS", "EREDIVISIE",
-    "CHAMPIONSHIP", "LIGA MX", "BRASILEIRAO", "ARGENTINA",
-    "SCOTTISH", "TURKISH", "SUPER LIG", "BELGIAN",
-    "PORTUGUESE", "PRIMEIRA", "RUSSIAN", "GREEK",
-    "AUSTRIAN", "SWISS", "DUTCH", "AFRICAN",
-    "WORLD CUP", "EURO", "COPA AMERICA", "NATIONS LEAGUE"
+    "PREMIER LEAGUE",
+    "CHAMPIONS LEAGUE",
+    "LA LIGA",
+    "LALIGA",
+    "BUNDESLIGA",
+    "SERIE A",
+    "LIGUE 1",
+    "EUROPA LEAGUE",
+    "CONFERENCE LEAGUE",
+    "FA CUP",
+    "COPA DEL REY",
+    "DFB POKAL",
+    "COPPA ITALIA",
+    "COUPE DE FRANCE",
+    "CARABAO CUP",
+    "EFL CUP",
+    "COMMUNITY SHIELD",
+    "SUPER CUP",
+    "CHAMPIONSHIP",
+    "EREDIVISIE",
+    "PRIMEIRA LIGA",
+    "SCOTTISH PREMIERSHIP",
+    "BELGIAN PRO LEAGUE",
+    "SUPER LIG",
+    "SAUDI PRO LEAGUE",
+    "MLS",
+    "LIGA MX",
+    "BRASILEIRAO",
+    "ARGENTINA PRIMERA",
+    "WORLD CUP",
+    "EURO",
+    "COPA AMERICA",
+    "NATIONS LEAGUE",
+    "AFRICAN CUP",
+    "AFCON"
   ]
 };
 
@@ -48,6 +74,7 @@ var LEAGUE_FLAGS = {
   "FA CUP": "\uD83C\uDFF4\uDB40\uDC67\uDB40\uDC62\uDB40\uDC65\uDB40\uDC6E\uDB40\uDC67\uDB40\uDC7F",
   "CARABAO": "\uD83C\uDFF4\uDB40\uDC67\uDB40\uDC62\uDB40\uDC65\uDB40\uDC6E\uDB40\uDC67\uDB40\uDC7F",
   "EFL": "\uD83C\uDFF4\uDB40\uDC67\uDB40\uDC62\uDB40\uDC65\uDB40\uDC6E\uDB40\uDC67\uDB40\uDC7F",
+  "COMMUNITY": "\uD83C\uDFF4\uDB40\uDC67\uDB40\uDC62\uDB40\uDC65\uDB40\uDC6E\uDB40\uDC67\uDB40\uDC7F",
   "SPAIN": "\uD83C\uDDEA\uD83C\uDDF8",
   "LA LIGA": "\uD83C\uDDEA\uD83C\uDDF8",
   "LALIGA": "\uD83C\uDDEA\uD83C\uDDF8",
@@ -65,12 +92,13 @@ var LEAGUE_FLAGS = {
   "EUROPA": "\uD83C\uDDEA\uD83C\uDDFA",
   "UEFA": "\uD83C\uDDEA\uD83C\uDDFA",
   "CONFERENCE": "\uD83C\uDDEA\uD83C\uDDFA",
+  "SUPER CUP": "\uD83C\uDDEA\uD83C\uDDFA",
+  "NATIONS": "\uD83C\uDDEA\uD83C\uDDFA",
   "NETHERLANDS": "\uD83C\uDDF3\uD83C\uDDF1",
   "EREDIVISIE": "\uD83C\uDDF3\uD83C\uDDF1",
   "DUTCH": "\uD83C\uDDF3\uD83C\uDDF1",
   "PORTUGAL": "\uD83C\uDDF5\uD83C\uDDF9",
   "PRIMEIRA": "\uD83C\uDDF5\uD83C\uDDF9",
-  "PORTUGUESE": "\uD83C\uDDF5\uD83C\uDDF9",
   "USA": "\uD83C\uDDFA\uD83C\uDDF8",
   "MLS": "\uD83C\uDDFA\uD83C\uDDF8",
   "MEXICO": "\uD83C\uDDF2\uD83C\uDDFD",
@@ -82,43 +110,15 @@ var LEAGUE_FLAGS = {
   "SCOTLAND": "\uD83C\uDFF4\uDB40\uDC67\uDB40\uDC62\uDB40\uDC73\uDB40\uDC63\uDB40\uDC74\uDB40\uDC7F",
   "SCOTTISH": "\uD83C\uDFF4\uDB40\uDC67\uDB40\uDC62\uDB40\uDC73\uDB40\uDC63\uDB40\uDC74\uDB40\uDC7F",
   "TURKEY": "\uD83C\uDDF9\uD83C\uDDF7",
-  "TURKISH": "\uD83C\uDDF9\uD83C\uDDF7",
   "SUPER LIG": "\uD83C\uDDF9\uD83C\uDDF7",
   "BELGIUM": "\uD83C\uDDE7\uD83C\uDDEA",
   "BELGIAN": "\uD83C\uDDE7\uD83C\uDDEA",
-  "AUSTRIA": "\uD83C\uDDE6\uD83C\uDDF9",
-  "AUSTRIAN": "\uD83C\uDDE6\uD83C\uDDF9",
-  "SWITZERLAND": "\uD83C\uDDE8\uD83C\uDDED",
-  "SWISS": "\uD83C\uDDE8\uD83C\uDDED",
-  "RUSSIA": "\uD83C\uDDF7\uD83C\uDDFA",
-  "RUSSIAN": "\uD83C\uDDF7\uD83C\uDDFA",
-  "GREECE": "\uD83C\uDDEC\uD83C\uDDF7",
-  "GREEK": "\uD83C\uDDEC\uD83C\uDDF7",
   "WORLD": "\uD83C\uDF0D",
+  "EURO": "\uD83C\uDDEA\uD83C\uDDFA",
+  "COPA AMERICA": "\uD83C\uDF0E",
   "AFRICA": "\uD83C\uDF0D",
   "AFRICAN": "\uD83C\uDF0D",
-  "EGYPT": "\uD83C\uDDEA\uD83C\uDDEC",
-  "MOROCCO": "\uD83C\uDDF2\uD83C\uDDE6",
-  "JAPAN": "\uD83C\uDDEF\uD83C\uDDF5",
-  "KOREA": "\uD83C\uDDF0\uD83C\uDDF7",
-  "CHINA": "\uD83C\uDDE8\uD83C\uDDF3",
-  "AUSTRALIA": "\uD83C\uDDE6\uD83C\uDDFA",
-  "COLOMBIA": "\uD83C\uDDE8\uD83C\uDDF4",
-  "CHILE": "\uD83C\uDDE8\uD83C\uDDF1",
-  "PERU": "\uD83C\uDDF5\uD83C\uDDEA",
-  "UKRAINE": "\uD83C\uDDFA\uD83C\uDDE6",
-  "POLAND": "\uD83C\uDDF5\uD83C\uDDF1",
-  "CZECH": "\uD83C\uDDE8\uD83C\uDDFF",
-  "CROATIA": "\uD83C\uDDED\uD83C\uDDF7",
-  "SERBIA": "\uD83C\uDDF7\uD83C\uDDF8",
-  "DENMARK": "\uD83C\uDDE9\uD83C\uDDF0",
-  "SWEDEN": "\uD83C\uDDF8\uD83C\uDDEA",
-  "NORWAY": "\uD83C\uDDF3\uD83C\uDDF4",
-  "FINLAND": "\uD83C\uDDEB\uD83C\uDDEE",
-  "ISRAEL": "\uD83C\uDDEE\uD83C\uDDF1",
-  "QATAR": "\uD83C\uDDF6\uD83C\uDDE6",
-  "UAE": "\uD83C\uDDE6\uD83C\uDDEA",
-  "INDIA": "\uD83C\uDDEE\uD83C\uDDF3"
+  "AFCON": "\uD83C\uDF0D"
 };
 
 function getFlag(leagueName) {
@@ -174,10 +174,14 @@ function formatOdds(odds) {
 function isTopLeague(leagueName) {
   if (!leagueName) return false;
   var upper = leagueName.toUpperCase();
-  var exclude = ["U17", "U18", "U19", "U20", "U21", "U23", "YOUTH", "RESERVE", "AMATEUR", "WOMEN U", "GIRL"];
+  
+  // Exclude youth, reserve, amateur
+  var exclude = ["U17", "U18", "U19", "U20", "U21", "U23", "YOUTH", "RESERVE", "AMATEUR", "WOMEN U", "GIRL", "II", "III", "B TEAM", "SECOND"];
   for (var i = 0; i < exclude.length; i++) {
     if (upper.indexOf(exclude[i]) !== -1) return false;
   }
+  
+  // Must match a top league
   for (var i = 0; i < CONFIG.TOP_LEAGUES.length; i++) {
     if (upper.indexOf(CONFIG.TOP_LEAGUES[i]) !== -1) return true;
   }
@@ -240,7 +244,7 @@ function shouldPostNow(history) {
   var hours = getHoursSinceLastPost(history);
   var target = CONFIG.MIN_POSTS_PER_DAY + (parseInt(getTodayDate().replace(/-/g, '')) % 5);
   
-  console.log("Posts: " + count + "/" + target + " | Hours since last: " + hours.toFixed(1));
+  console.log("Posts: " + count + "/" + target + " | Hours: " + hours.toFixed(1));
   
   if (count >= target) return false;
   if (hours < CONFIG.MIN_HOURS_BETWEEN_POSTS) return false;
@@ -362,7 +366,8 @@ function processMatches(raw) {
   var all = [];
   for (var i = 0; i < valid.length; i++) {
     var t = transform(valid[i]);
-    if (t.status !== "CANCELLED") {
+    // ONLY TOP LEAGUES
+    if (t.isTop && t.status !== "CANCELLED") {
       all.push(t);
     }
   }
@@ -399,14 +404,6 @@ function groupByLeague(matches) {
     groups[key].matches.push(m);
   }
   return Object.values(groups);
-}
-
-function filterTop(matches) {
-  var result = [];
-  for (var i = 0; i < matches.length; i++) {
-    if (matches[i].isTop) result.push(matches[i]);
-  }
-  return result;
 }
 
 function getRiskStars(risk) {
@@ -451,29 +448,17 @@ function generatePrediction(match) {
 
 function buildPost(cats) {
   var date = getTodayFormatted();
-  var total = cats.live.length + cats.finished.length + cats.upcoming.length;
-  
-  var topLive = filterTop(cats.live);
-  var topFinished = filterTop(cats.finished);
-  var topUpcoming = filterTop(cats.upcoming);
-  
-  // If not enough top matches, include all matches
-  var allLive = topLive.length >= 5 ? topLive : cats.live;
-  var allFinished = topFinished.length >= 5 ? topFinished : cats.finished;
-  var allUpcoming = topUpcoming.length >= 5 ? topUpcoming : cats.upcoming;
   
   var post = "";
   
-  // HEADER
-  post += "\u26BD FOOTBALL DAILY | " + date + "\n";
-  post += "\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\n";
-  post += "\uD83D\uDCCA " + total + " Matches | " + allUpcoming.slice(0, CONFIG.MAX_PREDICTIONS).length + " Predictions! \uD83C\uDFAF\n";
+  // CLEAN HEADER - No match count
+  post += "\u26BD FOOTBALL DAILY | " + date + " \uD83C\uDFAF\n";
   post += "\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\n\n";
   
-  // LIVE SCORES - INCREASED LIMIT
-  var liveToShow = allLive.slice(0, CONFIG.MAX_LIVE_MATCHES);
+  // LIVE SCORES
+  var liveToShow = cats.live.slice(0, CONFIG.MAX_LIVE_MATCHES);
   if (liveToShow.length > 0) {
-    post += "\uD83D\uDD34 LIVE SCORES (" + liveToShow.length + " matches)\n";
+    post += "\uD83D\uDD34 LIVE SCORES\n";
     post += "\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\n\n";
     
     var grouped = groupByLeague(liveToShow);
@@ -490,10 +475,10 @@ function buildPost(cats) {
     }
   }
   
-  // RESULTS - INCREASED LIMIT
-  var finishedToShow = allFinished.slice(0, CONFIG.MAX_FINISHED_MATCHES);
+  // RESULTS
+  var finishedToShow = cats.finished.slice(0, CONFIG.MAX_FINISHED_MATCHES);
   if (finishedToShow.length > 0) {
-    post += "\u2705 TODAY'S RESULTS (" + finishedToShow.length + " matches)\n";
+    post += "\u2705 TODAY'S RESULTS\n";
     post += "\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\n\n";
     
     var grouped = groupByLeague(finishedToShow);
@@ -511,10 +496,10 @@ function buildPost(cats) {
     }
   }
   
-  // PREDICTIONS - INCREASED LIMIT
-  var predictionsToShow = allUpcoming.slice(0, CONFIG.MAX_PREDICTIONS);
+  // PREDICTIONS
+  var predictionsToShow = cats.upcoming.slice(0, CONFIG.MAX_PREDICTIONS);
   if (predictionsToShow.length > 0) {
-    post += "\uD83C\uDFAF TOP PREDICTIONS (" + predictionsToShow.length + " picks)\n";
+    post += "\uD83C\uDFAF TOP PREDICTIONS\n";
     post += "\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\n\n";
     
     for (var i = 0; i < predictionsToShow.length; i++) {
@@ -542,7 +527,7 @@ function buildPost(cats) {
     }
   }
   
-  // ACCUMULATOR - INCREASED PICKS
+  // ACCUMULATOR
   if (predictionsToShow.length >= 4) {
     post += "\uD83D\uDD25 ACCUMULATOR OF THE DAY\n";
     post += "\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\n\n";
@@ -565,10 +550,10 @@ function buildPost(cats) {
   }
   
   // VALUE BETS
-  post += "\uD83D\uDCC8 VALUE BETS\n";
-  post += "\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\n\n";
-  
   if (predictionsToShow.length >= 3) {
+    post += "\uD83D\uDCC8 VALUE BETS\n";
+    post += "\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\n\n";
+    
     var m1 = predictionsToShow[0];
     var m2 = predictionsToShow[1];
     var m3 = predictionsToShow[2];
@@ -613,13 +598,13 @@ async function postToFacebook(message) {
     throw new Error("Facebook error: " + res.status + " - " + err);
   }
   
-  console.log("Posted successfully!");
+  console.log("Posted!");
   return res.json();
 }
 
 async function main() {
   console.log("==================================================");
-  console.log("GLOBAL SCORE NEWS v8.3 - More Matches Edition");
+  console.log("GLOBAL SCORE NEWS v8.4 - Top Leagues Only");
   console.log("==================================================");
   
   assertEnv();
@@ -627,41 +612,44 @@ async function main() {
   var history = loadHistory();
   
   if (!FORCE_POST && !shouldPostNow(history)) {
-    console.log("Skipping this run");
+    console.log("Skipping");
     return;
   }
   
-  if (FORCE_POST) console.log("FORCE POST MODE");
+  if (FORCE_POST) console.log("FORCE POST");
   
   var raw = await fetchAllMatches();
   if (!raw || raw.length === 0) {
-    console.log("No matches found");
+    console.log("No matches");
     return;
   }
   
   var cats = processMatches(raw);
   
-  console.log("Live: " + cats.live.length);
-  console.log("Finished: " + cats.finished.length);
-  console.log("Upcoming: " + cats.upcoming.length);
+  var total = cats.live.length + cats.finished.length + cats.upcoming.length;
+  console.log("Top League Matches: " + total);
+  console.log("  Live: " + cats.live.length);
+  console.log("  Finished: " + cats.finished.length);
+  console.log("  Upcoming: " + cats.upcoming.length);
   
-  var topCount = filterTop(cats.live).length + filterTop(cats.finished).length + filterTop(cats.upcoming).length;
-  console.log("Top league matches: " + topCount);
+  if (total < 3) {
+    console.log("Not enough top league matches");
+    return;
+  }
   
   var post = buildPost(cats);
   
   console.log("==================================================");
-  console.log("POST PREVIEW:");
+  console.log("POST:");
   console.log("==================================================");
   console.log(post);
   console.log("==================================================");
-  console.log("Length: " + post.length + " characters");
+  console.log("Length: " + post.length);
   
   var result = await postToFacebook(post);
-  recordPost(history, cats.live.length + cats.finished.length + cats.upcoming.length);
+  recordPost(history, total);
   
-  console.log("SUCCESS! Post ID: " + result.id);
-  console.log("Today total: " + getTodayCount(history) + " posts");
+  console.log("SUCCESS! ID: " + result.id);
 }
 
 main().catch(function(e) {
